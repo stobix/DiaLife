@@ -1,8 +1,13 @@
 package se.joelbit.dialife.domain
 
+import java.time.LocalDateTime
+
 data class DiaryEntry (
         val id: Long,
-        val text: String
+        val title: String?,
+        val text: String,
+        val datetime: LocalDateTime,
+        val icon: Icon
         )
 
 

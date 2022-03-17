@@ -11,44 +11,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
-        android:layout_marginBottom="164dp"
         android:contentDescription="add a new entry with the displayed text"
         android:src="@android:drawable/ic_menu_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
-        android:id="@+id/entryText"
+        android:id="@+id/entryTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="44dp"
-        android:layout_marginBottom="160dp"
         android:ems="10"
-        android:hint="Diary entry text"
+        android:hint="Title"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/addEntry"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/removeLastEntry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginBottom="164dp"
         android:contentDescription="remove the last entry"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/addEntry"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="18dp"
-        android:text="Diary entry text"
-        app:layout_constraintBottom_toBottomOf="@+id/entryText"
-        app:layout_constraintEnd_toStartOf="@+id/entryText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/entryText" />
 
     <TextView
         android:id="@+id/textView2"
@@ -63,8 +51,30 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:text="Add new entry"
-        app:layout_constraintBottom_toTopOf="@+id/addEntry"
-        app:layout_constraintEnd_toEndOf="@+id/addEntry" />
+        app:layout_constraintEnd_toEndOf="@+id/addEntry"
+        app:layout_constraintTop_toBottomOf="@+id/entryText" />
+
+    <EditText
+        android:id="@+id/entryText"
+        android:layout_width="334dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Text"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/entryTitle" />
+
+    <Spinner
+        android:id="@+id/iconSpinner"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/entryTitle"
+        app:layout_constraintEnd_toStartOf="@+id/entryTitle"
+        app:layout_constraintHorizontal_bias="0.812"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/entryTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,10 +9,11 @@ import se.joelbit.dialife.MainActivity
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
 
-class DiaryEntriesViewModel(val useCases: MainActivity.UseCases) : ViewModel() {
+class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewModel() {
 
     private val _text = MutableLiveData<String>()
 
+    private val _activeEntry = MutableLiveData<OpenDiaryEntry>()
     private val _entries = MutableLiveData<List<DiaryEntry>>()
 
     init {
@@ -45,9 +46,11 @@ class DiaryEntriesViewModel(val useCases: MainActivity.UseCases) : ViewModel() {
         }
     }
 
-    fun displayActiveEntry() {
+    fun getActiveEntry() {
         viewModelScope.launch {
-            when(val openEntry = useCases.getOpenEntry()) {
+            val openEntry = useCases.getOpenEntry()
+            _activeEntry.postValue(openEntry)
+            when(openEntry) {
                 is OpenDiaryEntry.Entry ->
                     _text.postValue("Last clicked entry: ${openEntry.entry.text}")
                 OpenDiaryEntry.None ->
@@ -57,5 +60,6 @@ class DiaryEntriesViewModel(val useCases: MainActivity.UseCases) : ViewModel() {
     }
 
     val text: LiveData<String> = _text
+    val activeEntry: LiveData<OpenDiaryEntry> = _activeEntry
     val entries: LiveData<List<DiaryEntry>> = _entries
 }

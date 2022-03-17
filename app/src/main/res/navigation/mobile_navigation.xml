@@ -22,7 +22,7 @@
         android:id="@+id/navigation_diary_entries"
         android:name="se.joelbit.dialife.ui.diaryEntries.DiaryEntriesFragment"
         android:label="@string/title_diary_entries"
-        tools:layout="@layout/fragment_dashboard" >
+        tools:layout="@layout/fragment_entries" >
         <action
             android:id="@+id/action_navigation_diary_entries_to_navigation_manage"
             app:destination="@id/navigation_notifications" />
@@ -32,5 +32,5 @@
         android:id="@+id/navigation_notifications"
         android:name="se.joelbit.dialife.ui.entryManagement.EntryManagementFragment"
         android:label="@string/title_manage_entries"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_management" />
 </navigation>
