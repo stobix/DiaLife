@@ -7,6 +7,9 @@ interface  DiaryEntriesDao {
     @Query("select * from diary_entries")
     suspend fun getAll(): List<DiaryEntriesEntity>
 
+    @Query("select case when max(id) is null then 1 else max(id)+1 end from diary_entries")
+    suspend fun getNextId(): Long
+
     @Insert
     suspend fun insertAll(entriesList: List<DiaryEntriesEntity>)
 
@@ -15,6 +18,9 @@ interface  DiaryEntriesDao {
 
     @Update
     suspend fun updateAll(entriesList: List<DiaryEntriesEntity>)
+
+    @Update
+    suspend fun update(entry: DiaryEntriesEntity)
 
     @Delete
     suspend fun deleteOne(entry: DiaryEntriesEntity)

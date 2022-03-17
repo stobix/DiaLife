@@ -10,8 +10,8 @@ import se.joelbit.dialife.framework.db.DiaryEntriesEntity
 
 class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
     override suspend fun add(entry: DiaryEntry) {
-        val dbEntry = entry.toDbEntry()
-
+        val nextId = dao.getNextId()
+        val dbEntry = entry.toDbEntry(nextId)
         dao.insert(dbEntry)
     }
 
@@ -29,4 +29,5 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
 object RoomDbEntryConverter {
     fun DiaryEntriesEntity.toDomainEntity() = DiaryEntry(id,text)
     fun DiaryEntry.toDbEntry() = DiaryEntriesEntity(id,text)
+    fun DiaryEntry.toDbEntry(id: Long) = DiaryEntriesEntity(id,text)
 }

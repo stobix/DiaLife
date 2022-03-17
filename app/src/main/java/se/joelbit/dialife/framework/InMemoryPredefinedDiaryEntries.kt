@@ -8,8 +8,6 @@ class InMemoryPredefinedDiaryEntries : DiaryEntryDataSource {
         DiaryEntry(1, "ett"),
         DiaryEntry(2, "tu"),
         DiaryEntry(3, "tre"),
-
-
     )
     override suspend fun add(entry: DiaryEntry) {
         entries.add(entry)

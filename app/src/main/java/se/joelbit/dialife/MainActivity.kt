@@ -3,6 +3,7 @@ package se.joelbit.dialife
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,9 +90,9 @@ class MainActivity : AppCompatActivity() {
             androidLogger()
             androidContext(this@MainActivity)
             // Change to one of these to change the data source.
-            modules(viewModelsDef, inMemorydataSourcesDef, useCasesDef)
+//            modules(viewModelsDef, inMemorydataSourcesDef, useCasesDef)
 //            modules(viewModelsDef, inMemorydataSourcesPreDef, useCasesDef)
-//            modules(viewModelsDef, roomDataSourceDef, useCasesDef)
+            modules(viewModelsDef, roomDataSourceDef, useCasesDef)
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -106,4 +108,5 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
 }

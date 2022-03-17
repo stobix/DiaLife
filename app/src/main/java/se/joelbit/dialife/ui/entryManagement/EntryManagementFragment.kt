@@ -20,18 +20,19 @@ class EntryManagementFragment : Fragment() {
 
     private val rnd = Random.Default
 
+    val viewModel by viewModel<EntryManagementViewModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel by viewModel<EntryManagementViewModel>()
 
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.addEntry.setOnClickListener {
-            notificationsViewModel.addEntry(
+            viewModel.addEntry(
                 DiaryEntry(
                     id = rnd.nextLong() ,
                     text = binding.entryText.text.toString()
@@ -40,10 +41,11 @@ class EntryManagementFragment : Fragment() {
         }
 
         binding.removeLastEntry.setOnClickListener {
-            notificationsViewModel.removeLastEntry()
+            viewModel.removeLastEntry()
         }
         return root
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
