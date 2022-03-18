@@ -6,15 +6,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import se.joelbit.dialife.MainActivity
-import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
+import se.joelbit.dialife.ui.displayEntities.DisplayDiaryEntry
+import se.joelbit.dialife.ui.displayEntities.mappers.DisplayDiaryEntryMapper
+import se.joelbit.dialife.ui.displayEntities.DisplayOpenDiaryEntry
+import se.joelbit.dialife.ui.displayEntities.mappers.DisplayOpenDiaryEntryMapper
 
-class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewModel() {
+class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases,
+                            private val entryMapper: DisplayDiaryEntryMapper,
+                            private val openEntryMapper: DisplayOpenDiaryEntryMapper,
+) : ViewModel() {
+
 
     private val _text = MutableLiveData<String>()
 
-    private val _activeEntry = MutableLiveData<OpenDiaryEntry>()
-    private val _entries = MutableLiveData<List<DiaryEntry>>()
+    private val _activeEntry = MutableLiveData<DisplayOpenDiaryEntry>()
+    private val _entries = MutableLiveData<List<DisplayDiaryEntry>>()
 
     init {
         loadEntries()
@@ -23,8 +30,9 @@ class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewM
     fun loadEntries() {
         viewModelScope.launch {
             val fetched = useCases.getEntries()
-            _entries.postValue(fetched)
-            if(fetched.isEmpty())
+            val mapped = fetched.map { entryMapper.toDisplayEntry(it)  }
+            _entries.postValue(mapped)
+            if(mapped.isEmpty())
                 _text.postValue("Go to the Manage tab to add/remove entries.")
 
 //            _text.postValue(
@@ -38,10 +46,10 @@ class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewM
         }
     }
 
-    fun setActiveEntry(entry: DiaryEntry?) {
+    fun setActiveEntry(entry: DisplayDiaryEntry?) {
         viewModelScope.launch {
             entry?.let {
-                useCases.setOpenEntry(it)
+                useCases.setOpenEntry(entryMapper.fromDisplayEntry(it))
             } ?: useCases.clearOpenEntry()
         }
     }
@@ -49,7 +57,8 @@ class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewM
     fun getActiveEntry() {
         viewModelScope.launch {
             val openEntry = useCases.getOpenEntry()
-            _activeEntry.postValue(openEntry)
+            val mappedEntry = openEntryMapper.toDisplay(openEntry)
+            _activeEntry.postValue(mappedEntry)
             when(openEntry) {
                 is OpenDiaryEntry.Entry ->
                     _text.postValue("Last clicked entry: ${openEntry.entry.text}")
@@ -60,6 +69,6 @@ class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases) : ViewM
     }
 
     val text: LiveData<String> = _text
-    val activeEntry: LiveData<OpenDiaryEntry> = _activeEntry
-    val entries: LiveData<List<DiaryEntry>> = _entries
+    val activeEntry: LiveData<DisplayOpenDiaryEntry> = _activeEntry
+    val entries: LiveData<List<DisplayDiaryEntry>> = _entries
 }

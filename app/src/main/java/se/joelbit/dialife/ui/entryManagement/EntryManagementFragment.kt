@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.databinding.FragmentManagementBinding
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
-import se.joelbit.dialife.ui.DisplayIcon
+import se.joelbit.dialife.ui.displayEntities.DisplayIcon
 import se.joelbit.dialife.ui.uiComponents.IconArrayAdapter
 import java.time.LocalDateTime
 import kotlin.random.Random
@@ -60,7 +60,7 @@ class EntryManagementFragment : Fragment() {
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
-            adapter = IconArrayAdapter(context)
+            adapter = IconArrayAdapter(context, viewModel.iconMapper)
 
         }
         return root

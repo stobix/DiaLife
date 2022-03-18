@@ -50,7 +50,7 @@ object ListAdapterFactory {
 
 
     /**
-     * A list adapter with better default values.
+     * A list adapter with better default values. Doesn't "forget" which entries are active in edge cases et al.
      */
     open class StableItemListAdapter<A, V : StableItemListAdapter.ItemViewHolder<A>>(
         val holderGenerator: (parent: ViewGroup) -> V,

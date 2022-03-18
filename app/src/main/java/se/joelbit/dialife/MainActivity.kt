@@ -3,7 +3,6 @@ package se.joelbit.dialife
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -25,6 +24,7 @@ import se.joelbit.dialife.framework.InMemoryPredefinedDiaryEntries
 import se.joelbit.dialife.framework.RoomDiaryEntries
 import se.joelbit.dialife.framework.db.DiaryEntriesDb
 import se.joelbit.dialife.ui.diaryEntries.DiaryEntriesViewModel
+import se.joelbit.dialife.ui.displayEntities.mappers.*
 import se.joelbit.dialife.ui.entryManagement.EntryManagementViewModel
 import se.joelbit.dialife.useCases.*
 
@@ -73,12 +73,32 @@ class MainActivity : AppCompatActivity() {
         single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
     }
 
+    val iconResDef1 = module {
+        single<DisplayIconMapper> {
+            DisplayIconMapperImpl1()
+        }
+    }
+
+    val iconResDef2 = module {
+        single<DisplayIconMapper> {
+            DisplayIconMapperImpl2()
+        }
+    }
+
     val viewModelsDef = module {
+
+        single<DisplayDiaryEntryMapper> {
+            IconDisplayDiaryEntryMapper(get())
+        }
+        single<DisplayOpenDiaryEntryMapper> {
+            DisplayOpenDiaryEntryMapperImpl(get())
+        }
+
         viewModel {
-            DiaryEntriesViewModel(get())
+            DiaryEntriesViewModel(get(), get(), get())
         }
         viewModel {
-            EntryManagementViewModel(get())
+            EntryManagementViewModel(get(),get())
         }
     }
 
@@ -89,10 +109,22 @@ class MainActivity : AppCompatActivity() {
         startKoin {
             androidLogger()
             androidContext(this@MainActivity)
+
             // Change to one of these to change the data source.
-//            modules(viewModelsDef, inMemorydataSourcesDef, useCasesDef)
-//            modules(viewModelsDef, inMemorydataSourcesPreDef, useCasesDef)
-            modules(viewModelsDef, roomDataSourceDef, useCasesDef)
+            val datasourceDef= inMemorydataSourcesPreDef
+//            val datasourceDef= inMemorydataSourcesDef
+//            val datasourceDef= roomDataSourceDef
+
+            // Change to one of these to change the icon resource definitions.
+            val iconResDef = iconResDef1
+//            val iconResDef = iconResDef2
+
+            modules(
+                viewModelsDef,
+                datasourceDef,
+                useCasesDef,
+                iconResDef,
+            )
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)

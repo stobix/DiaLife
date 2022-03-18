@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import se.joelbit.dialife.databinding.SpinnerItemBinding
-import se.joelbit.dialife.ui.DisplayIcon
+import se.joelbit.dialife.domain.Icon
+import se.joelbit.dialife.ui.displayEntities.DisplayIcon
+import se.joelbit.dialife.ui.displayEntities.mappers.DisplayIconMapper
 
-class IconArrayAdapter(context: Context): ArrayAdapter<DisplayIcon>(context, 0, DisplayIcon.values()) {
+class IconArrayAdapter(context: Context, val converter: DisplayIconMapper): ArrayAdapter<DisplayIcon>(context, 0, Icon.values().map { converter.fromIcon(it) }) {
 
     private infix fun View?.boundFor(parent: ViewGroup) =
         if (this == null)
@@ -19,7 +21,7 @@ class IconArrayAdapter(context: Context): ArrayAdapter<DisplayIcon>(context, 0, 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup) =
         with(convertView boundFor parent) {
-            val resId = getItem(position)?.resId ?: DisplayIcon.Error.resId
+            val resId = getItem(position)?.resId ?: converter.fromIcon(Icon.Error).resId
             Log.d("resId", "$resId")
             iconImage.setImageResource(resId)
             root

@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
-import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
-import se.joelbit.dialife.ui.DisplayIcon
+import se.joelbit.dialife.ui.displayEntities.DisplayDiaryEntry
+import se.joelbit.dialife.ui.displayEntities.DisplayOpenDiaryEntry
 import se.joelbit.dialife.ui.uiComponents.ListAdapterFactory
-import se.joelbit.dialife.ui.res
 
 class DiaryEntriesFragment : Fragment() {
 
@@ -41,13 +40,12 @@ class DiaryEntriesFragment : Fragment() {
         binding.entries.layoutManager = GridLayoutManager(context, 2)
 
         val adapter =
-            ListAdapterFactory.createListAdapter<DiaryEntry, ViewholderEntriesBinding>(
+            ListAdapterFactory.createListAdapter<DisplayDiaryEntry, ViewholderEntriesBinding>(
                 inflater = inflater,
                 itemIdGetter = { it.id },
                 itemSetter = { item, binding ->
                     binding.text.text = item.title ?: item.text
-                    val displayIcon = DisplayIcon.fromIcon(item.icon)
-                    binding.imageView.setImageResource(displayIcon.resId)
+                    binding.imageView.setImageResource(item.icon.resId)
                     binding.text.setOnClickListener {
                         viewModel.setActiveEntry(item)
                         viewModel.getActiveEntry()
@@ -67,13 +65,13 @@ class DiaryEntriesFragment : Fragment() {
 
         viewModel.activeEntry.observe(viewLifecycleOwner){ activeEntry ->
             when(activeEntry){
-                is OpenDiaryEntry.Entry -> {
+                is DisplayOpenDiaryEntry.Entry -> {
 
                     binding.itemDisplay.visibility = View.VISIBLE
                     binding.info.visibility = View.INVISIBLE
 
                     val entry = activeEntry.entry
-                    binding.imageView2.setImageResource(entry.icon.res)
+                    binding.imageView2.setImageResource(entry.icon.resId)
                     binding.title.text = entry.title
                     binding.text.text = entry.text
                     binding.date.text =
@@ -81,7 +79,7 @@ class DiaryEntriesFragment : Fragment() {
                                 entry.datetime.toLocalTime().toString()
 
                 }
-                OpenDiaryEntry.None -> {
+                DisplayOpenDiaryEntry.None -> {
                     binding.itemDisplay.visibility = View.INVISIBLE
                     binding.info.visibility = View.VISIBLE
                     binding.info.text = "Click an entry to see details, or manage entries on the manage tab."

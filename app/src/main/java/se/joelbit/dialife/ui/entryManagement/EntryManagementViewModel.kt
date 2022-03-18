@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import se.joelbit.dialife.MainActivity
 import se.joelbit.dialife.domain.DiaryEntry
+import se.joelbit.dialife.ui.displayEntities.mappers.DisplayIconMapper
 
-class EntryManagementViewModel(private val useCases: MainActivity.UseCases) : ViewModel() {
+class EntryManagementViewModel(private val useCases: MainActivity.UseCases, val iconMapper: DisplayIconMapper) : ViewModel() {
 
     fun addEntry(entry: DiaryEntry) = viewModelScope.launch {
         useCases.addEntry(entry)
@@ -15,6 +16,7 @@ class EntryManagementViewModel(private val useCases: MainActivity.UseCases) : Vi
     fun removeEntry(entry: DiaryEntry) = viewModelScope.launch {
         useCases.removeEntry(entry)
     }
+
 
     fun removeLastEntry() = viewModelScope.launch {
         val entry = useCases.getEntries().lastOrNull()?.let { entry ->
