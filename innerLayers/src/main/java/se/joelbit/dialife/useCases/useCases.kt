@@ -6,10 +6,16 @@ import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
 
 
+/**
+ * When invoked, this use case runs [f] on the repository [r]. It is invoked with no arguments.
+ */
 open class NoArgsUseCase<Repo, T>(private val r: Repo, private val f:suspend Repo.() -> T){
     suspend operator fun invoke() = f(r)
 }
 
+/**
+ * When invoked, this use case runs [f] on the repository [r]. The invocation takes one argument of type [Arg] and passes it on to [f].
+ */
 open class OneArgUseCase<Repo, Arg, T>(private val r: Repo, private val f:suspend Repo.(Arg) -> T){
     suspend operator fun invoke(arg: Arg) = f(r, arg)
 }

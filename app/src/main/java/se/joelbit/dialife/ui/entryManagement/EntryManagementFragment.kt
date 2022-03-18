@@ -11,6 +11,7 @@ import se.joelbit.dialife.databinding.FragmentManagementBinding
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
 import se.joelbit.dialife.ui.DisplayIcon
+import se.joelbit.dialife.ui.uiComponents.IconArrayAdapter
 import java.time.LocalDateTime
 import kotlin.random.Random
 

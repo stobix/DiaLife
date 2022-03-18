@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 class HomeViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "Welcome to my little demo app written in Kotlin!\n\n" +
-                "It showcases Clean Architecture, MVVM, depencency injection via Koin with the possibility to switch between an in-memory storage and a Room database, and was built in one day."
+        value = "Welcome to my Android Kotlin demo app!\n\n" +
+                "It showcases a simple Clean Architecture structure with MVVM and a Room database. " +
+                "Add a diary entry on the manage tab, use the Diary entries tab to view added entries."
     }
     val text: LiveData<String> = _text
 }

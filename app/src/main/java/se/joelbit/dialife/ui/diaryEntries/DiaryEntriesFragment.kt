@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -14,6 +13,7 @@ import se.joelbit.dialife.databinding.ViewholderEntriesBinding
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
 import se.joelbit.dialife.ui.DisplayIcon
+import se.joelbit.dialife.ui.uiComponents.ListAdapterFactory
 import se.joelbit.dialife.ui.res
 
 class DiaryEntriesFragment : Fragment() {
@@ -40,25 +40,24 @@ class DiaryEntriesFragment : Fragment() {
 
         binding.entries.layoutManager = GridLayoutManager(context, 2)
 
-        val adapter = ListAdaptorFactory.createListAdapter(
-            binderInflator = { parent ->
-                ViewholderEntriesBinding.inflate(inflater, parent, false)
-            },
-            itemIdGetter = { it.id },
-            itemSetter = { item: DiaryEntry, binding ->
-                binding.text.text = item.title ?: item.text
-                val displayIcon = DisplayIcon.fromIcon(item.icon)
-                binding.imageView.setImageResource(displayIcon.resId)
-                binding.text.setOnClickListener {
-                    viewModel.setActiveEntry(item)
-                    viewModel.getActiveEntry()
+        val adapter =
+            ListAdapterFactory.createListAdapter<DiaryEntry, ViewholderEntriesBinding>(
+                inflater = inflater,
+                itemIdGetter = { it.id },
+                itemSetter = { item, binding ->
+                    binding.text.text = item.title ?: item.text
+                    val displayIcon = DisplayIcon.fromIcon(item.icon)
+                    binding.imageView.setImageResource(displayIcon.resId)
+                    binding.text.setOnClickListener {
+                        viewModel.setActiveEntry(item)
+                        viewModel.getActiveEntry()
+                    }
+                    binding.imageView.setOnClickListener{
+                        viewModel.setActiveEntry(item)
+                        viewModel.getActiveEntry()
+                    }
                 }
-                binding.imageView.setOnClickListener{
-                    viewModel.setActiveEntry(item)
-                    viewModel.getActiveEntry()
-                }
-            }
-        )
+            )
 
         binding.entries.adapter = adapter
 

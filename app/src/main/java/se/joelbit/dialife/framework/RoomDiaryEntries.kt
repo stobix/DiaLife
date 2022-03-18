@@ -28,6 +28,8 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
     }
 }
 
+// Since this "mapper" is only for the room data source, there is no need to create a general mapper.
+// Also, there's no good way to abstract the dao at this level, so let's keep the whole Room db structure as one conceptual unit.
 object RoomDbEntryConverter {
     fun DiaryEntriesEntity.toDomainEntity() =
         DiaryEntry(

@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.entryManagement
+package se.joelbit.dialife.ui.uiComponents
 
 import android.content.Context
 import android.util.Log
