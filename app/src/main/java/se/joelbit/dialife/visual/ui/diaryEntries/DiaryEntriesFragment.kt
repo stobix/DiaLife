@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.diaryEntries
+package se.joelbit.dialife.visual.ui.diaryEntries
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
-import se.joelbit.dialife.domain.OpenDiaryEntry
-import se.joelbit.dialife.ui.displayEntities.DisplayDiaryEntry
-import se.joelbit.dialife.ui.displayEntities.DisplayOpenDiaryEntry
-import se.joelbit.dialife.ui.uiComponents.ListAdapterFactory
+import se.joelbit.dialife.visual.displayEntities.DisplayDiaryEntry
+import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
+import se.joelbit.dialife.visual.uiComponents.ListAdapterFactory
 
 class DiaryEntriesFragment : Fragment() {
 
@@ -42,7 +41,6 @@ class DiaryEntriesFragment : Fragment() {
         val adapter =
             ListAdapterFactory.createListAdapter<DisplayDiaryEntry, ViewholderEntriesBinding>(
                 inflater = inflater,
-                itemIdGetter = { it.id },
                 itemSetter = { item, binding ->
                     binding.text.text = item.title ?: item.text
                     binding.imageView.setImageResource(item.icon.resId)

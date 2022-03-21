@@ -1,11 +1,11 @@
-package se.joelbit.dialife.ui.entryManagement
+package se.joelbit.dialife.visual.ui.entryManagement
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import se.joelbit.dialife.MainActivity
 import se.joelbit.dialife.domain.DiaryEntry
-import se.joelbit.dialife.ui.displayEntities.mappers.DisplayIconMapper
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 
 class EntryManagementViewModel(private val useCases: MainActivity.UseCases, val iconMapper: DisplayIconMapper) : ViewModel() {
 

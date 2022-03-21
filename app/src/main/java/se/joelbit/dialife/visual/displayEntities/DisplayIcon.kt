@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.displayEntities
+package se.joelbit.dialife.visual.displayEntities
 
 import androidx.annotation.DrawableRes
 

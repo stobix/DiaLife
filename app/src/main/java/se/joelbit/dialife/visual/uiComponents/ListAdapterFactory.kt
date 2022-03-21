@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.uiComponents
+package se.joelbit.dialife.visual.uiComponents
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -12,12 +12,11 @@ import androidx.viewbinding.ViewBinding
 
 
 /**
- * Abstracts away into a function a common use case for a list adapter and view holder.
- * "Why create two classes when one function call suffices?"
+ * Condenses into a function a common RecyclerView use case for a list adapter plus view holder.
  */
 object ListAdapterFactory {
     /**
-     * Create a simple ListAdapter using a list of [Item]s.
+     * Create a simple ListAdapter using a distinct list of [Item]s.
      * Use [binderInflater] to inflate your binding, [itemIdGetter] to get the item id when updating the list,
      * and [itemSetter] to set [Binding] properties from the [Item].
      */
@@ -33,7 +32,7 @@ object ListAdapterFactory {
 
 
     /**
-     * Create a simple ListAdapter using a list of [Item]s.
+     * Create a simple ListAdapter using a distinct list of [Item]s.
      * Provide [inflater] to inflate your binding, [itemIdGetter] to get the item id when updating the list,
      * and [itemSetter] to set [Binding] properties from the [Item].
      */
@@ -47,10 +46,24 @@ object ListAdapterFactory {
             GeneralBoundItemViewHolder(binding,itemSetter)
         },itemIdGetter).also { it.setHasStableIds(true) }
 
+    /**
+     * Create a simple ListAdapter using a distinct list of [Item]s.
+     * Provide [inflater] to inflate your binding, [itemIdGetter] to get the item id when updating the list,
+     * and [itemSetter] to set [Binding] properties from the [Item].
+     */
+    inline fun <Item: ListAdapterKeyItem<Long>, reified Binding: ViewBinding> createListAdapter(
+        inflater: LayoutInflater,
+        noinline itemSetter: (Item, Binding) -> Unit,
+    ) =
+        GeneralSimpleListAdapter({ view ->
+            val binding = inflateViewBinding<Binding>(inflater, view)
+            GeneralBoundItemViewHolder(binding,itemSetter)
+        },{ item -> item.getKey() } ).also { it.setHasStableIds(true) }
+
 
 
     /**
-     * A list adapter with better default values. Doesn't "forget" which entries are active in edge cases et al.
+     * A list adapter with better default values, i.e. doesn't "forget" which entries are active in edge cases et al.
      */
     open class StableItemListAdapter<A, V : StableItemListAdapter.ItemViewHolder<A>>(
         val holderGenerator: (parent: ViewGroup) -> V,

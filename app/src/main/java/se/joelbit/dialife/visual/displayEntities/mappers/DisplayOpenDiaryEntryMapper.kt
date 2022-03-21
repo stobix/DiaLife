@@ -1,7 +1,7 @@
-package se.joelbit.dialife.ui.displayEntities.mappers
+package se.joelbit.dialife.visual.displayEntities.mappers
 
 import se.joelbit.dialife.domain.OpenDiaryEntry
-import se.joelbit.dialife.ui.displayEntities.DisplayOpenDiaryEntry
+import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
 
 interface DisplayOpenDiaryEntryMapper{
     fun toDisplay(entry: OpenDiaryEntry): DisplayOpenDiaryEntry

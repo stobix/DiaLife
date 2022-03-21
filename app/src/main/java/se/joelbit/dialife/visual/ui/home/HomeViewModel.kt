@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.home
+package se.joelbit.dialife.visual.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

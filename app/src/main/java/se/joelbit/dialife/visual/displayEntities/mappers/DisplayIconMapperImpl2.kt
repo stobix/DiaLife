@@ -1,8 +1,8 @@
-package se.joelbit.dialife.ui.displayEntities.mappers
+package se.joelbit.dialife.visual.displayEntities.mappers
 
 import androidx.annotation.DrawableRes
 import se.joelbit.dialife.domain.Icon
-import se.joelbit.dialife.ui.displayEntities.DisplayIcon
+import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 
 // We can't inherit from enum directly, and enum can't inherit from stuff, so we must build a bunch of wrappers to make this switchable.
 class DisplayIconMapperImpl2: DisplayIconMapper {

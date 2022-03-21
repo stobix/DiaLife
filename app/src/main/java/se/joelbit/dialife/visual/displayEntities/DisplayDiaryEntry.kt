@@ -1,5 +1,6 @@
-package se.joelbit.dialife.ui.displayEntities
+package se.joelbit.dialife.visual.displayEntities
 
+import se.joelbit.dialife.visual.uiComponents.ListAdapterKeyItem
 import java.time.LocalDateTime
 
 data class DisplayDiaryEntry(
@@ -8,6 +9,7 @@ data class DisplayDiaryEntry(
     val text: String,
     val datetime: LocalDateTime,
     val icon: DisplayIcon,
-)
-
+)  : ListAdapterKeyItem<Long> {
+    override fun getKey() = id
+}
 

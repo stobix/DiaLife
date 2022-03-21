@@ -1,6 +1,6 @@
 package se.joelbit.dialife.domain
 
-enum class Icon() {
+enum class Icon {
         Checked, Star, Unchecked, Error
         ;
         companion object {

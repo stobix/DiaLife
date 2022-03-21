@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.displayEntities
+package se.joelbit.dialife.visual.displayEntities
 
 sealed class DisplayOpenDiaryEntry {
     object None : DisplayOpenDiaryEntry()

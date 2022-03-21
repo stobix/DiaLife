@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.entryManagement
+package se.joelbit.dialife.visual.ui.entryManagement
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.databinding.FragmentManagementBinding
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
-import se.joelbit.dialife.ui.displayEntities.DisplayIcon
-import se.joelbit.dialife.ui.uiComponents.IconArrayAdapter
+import se.joelbit.dialife.visual.displayEntities.DisplayIcon
+import se.joelbit.dialife.visual.uiComponents.IconArrayAdapter
 import java.time.LocalDateTime
 import kotlin.random.Random
 

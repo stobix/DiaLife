@@ -1,4 +1,4 @@
-package se.joelbit.dialife.ui.home
+package se.joelbit.dialife.visual.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

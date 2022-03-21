@@ -23,9 +23,9 @@ import se.joelbit.dialife.framework.InMemoryOpenDiaryEntry
 import se.joelbit.dialife.framework.InMemoryPredefinedDiaryEntries
 import se.joelbit.dialife.framework.RoomDiaryEntries
 import se.joelbit.dialife.framework.db.DiaryEntriesDb
-import se.joelbit.dialife.ui.diaryEntries.DiaryEntriesViewModel
-import se.joelbit.dialife.ui.displayEntities.mappers.*
-import se.joelbit.dialife.ui.entryManagement.EntryManagementViewModel
+import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
+import se.joelbit.dialife.visual.displayEntities.mappers.*
+import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
 import se.joelbit.dialife.useCases.*
 
 class MainActivity : AppCompatActivity() {
@@ -57,33 +57,6 @@ class MainActivity : AppCompatActivity() {
         single { UseCases(get(), get(), get(), get(), get(), get()) }
     }
 
-    val inMemorydataSourcesPreDef = module {
-        single<DiaryEntryDataSource> { InMemoryPredefinedDiaryEntries() }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val inMemorydataSourcesDef = module {
-        single<DiaryEntryDataSource> { InMemoryDiaryEntries() }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val roomDataSourceDef = module {
-        single { Room.databaseBuilder(get(),DiaryEntriesDb::class.java,"example-injected-db").build().dao() }
-        single<DiaryEntryDataSource> { RoomDiaryEntries(get()) }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val iconResDef1 = module {
-        single<DisplayIconMapper> {
-            DisplayIconMapperImpl1()
-        }
-    }
-
-    val iconResDef2 = module {
-        single<DisplayIconMapper> {
-            DisplayIconMapperImpl2()
-        }
-    }
 
     val viewModelsDef = module {
 
@@ -110,14 +83,15 @@ class MainActivity : AppCompatActivity() {
             androidLogger()
             androidContext(this@MainActivity)
 
+            print("hello")
             // Change to one of these to change the data source.
-            val datasourceDef= inMemorydataSourcesPreDef
-//            val datasourceDef= inMemorydataSourcesDef
-//            val datasourceDef= roomDataSourceDef
+//            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
+//            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesDef
+            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
 
             // Change to one of these to change the icon resource definitions.
-            val iconResDef = iconResDef1
-//            val iconResDef = iconResDef2
+            val iconResDef = KoinInjectionDefs.iconResDef1
+//            val iconResDef = KoinInjectionDefs::iconResDef2
 
             modules(
                 viewModelsDef,
@@ -139,6 +113,37 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_diary_entries, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+}
+
+object KoinInjectionDefs {
+    val inMemorydataSourcesPreDef = module {
+        single<DiaryEntryDataSource> { InMemoryPredefinedDiaryEntries() }
+        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
+    }
+
+    val inMemorydataSourcesDef = module {
+        single<DiaryEntryDataSource> { InMemoryDiaryEntries() }
+        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
+    }
+
+    val roomDataSourceDef = module {
+        single { Room.databaseBuilder(get(),DiaryEntriesDb::class.java,"example-injected-db").build().dao() }
+        single<DiaryEntryDataSource> { RoomDiaryEntries(get()) }
+        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
+    }
+
+    val iconResDef1 = module {
+        single<DisplayIconMapper> {
+            DisplayIconMapperImpl1()
+        }
+    }
+
+    val iconResDef2 = module {
+        single<DisplayIconMapper> {
+            DisplayIconMapperImpl2()
+        }
     }
 
 }
