@@ -1,38 +1,42 @@
 package se.joelbit.dialife
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.invoke
+import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
-import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.data.DiaryEntryRepository
-import se.joelbit.dialife.data.OpenDiaryEntryDataSource
 import se.joelbit.dialife.data.OpenDiaryEntryRepository
 import se.joelbit.dialife.databinding.ActivityMainBinding
-import se.joelbit.dialife.framework.InMemoryDiaryEntries
-import se.joelbit.dialife.framework.InMemoryOpenDiaryEntry
-import se.joelbit.dialife.framework.InMemoryPredefinedDiaryEntries
-import se.joelbit.dialife.framework.RoomDiaryEntries
-import se.joelbit.dialife.framework.db.DiaryEntriesDb
-import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
-import se.joelbit.dialife.visual.displayEntities.mappers.*
-import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
+import se.joelbit.dialife.network.ktorServer.KtorDbProvider
 import se.joelbit.dialife.useCases.*
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapperImpl
+import se.joelbit.dialife.visual.displayEntities.mappers.IconDisplayDiaryEntryMapper
+import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
+import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    data class UseCases(
+    data class MainUseCases (
         val addEntry: AddEntry,
         val removeEntry: RemoveEntry,
         val getEntries: GetEntries,
@@ -54,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         single { GetOpenEntry(get()) }
         single { ClearOpenEntry(get()) }
 
-        single { UseCases(get(), get(), get(), get(), get(), get()) }
+        single { MainUseCases(get(), get(), get(), get(), get(), get()) }
     }
 
 
@@ -73,6 +77,9 @@ class MainActivity : AppCompatActivity() {
         viewModel {
             EntryManagementViewModel(get(),get())
         }
+        viewModel {
+            MainViewModel(get())
+        }
     }
 
 
@@ -83,22 +90,32 @@ class MainActivity : AppCompatActivity() {
             androidLogger()
             androidContext(this@MainActivity)
 
-            print("hello")
             // Change to one of these to change the data source.
-//            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
+            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
 //            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesDef
-            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
+//            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
+//            val datasourceDef= KoinInjectionDefs.ktorDataSourceDef
 
             // Change to one of these to change the icon resource definitions.
-            val iconResDef = KoinInjectionDefs.iconResDef1
-//            val iconResDef = KoinInjectionDefs::iconResDef2
+//            val iconResDef = KoinInjectionDefs.iconResDef1
+            val iconResDef = KoinInjectionDefs.iconResDef2
 
             modules(
                 viewModelsDef,
                 datasourceDef,
                 useCasesDef,
                 iconResDef,
+                KoinInjectionDefs.ktorServerDef
             )
+        }
+
+        val viewModel  by viewModel<MainViewModel>()
+
+        val engine = viewModel.dataServer.engine
+
+        thread(start=true, isDaemon = true){
+            Log.d("Ktor","Initiating server")
+            engine.start()
         }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -117,33 +134,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-object KoinInjectionDefs {
-    val inMemorydataSourcesPreDef = module {
-        single<DiaryEntryDataSource> { InMemoryPredefinedDiaryEntries() }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val inMemorydataSourcesDef = module {
-        single<DiaryEntryDataSource> { InMemoryDiaryEntries() }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val roomDataSourceDef = module {
-        single { Room.databaseBuilder(get(),DiaryEntriesDb::class.java,"example-injected-db").build().dao() }
-        single<DiaryEntryDataSource> { RoomDiaryEntries(get()) }
-        single<OpenDiaryEntryDataSource> { InMemoryOpenDiaryEntry() }
-    }
-
-    val iconResDef1 = module {
-        single<DisplayIconMapper> {
-            DisplayIconMapperImpl1()
-        }
-    }
-
-    val iconResDef2 = module {
-        single<DisplayIconMapper> {
-            DisplayIconMapperImpl2()
-        }
-    }
-
-}

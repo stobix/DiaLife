@@ -9,12 +9,17 @@ class InMemoryDiaryEntries : DiaryEntryDataSource {
         entries.add(entry)
     }
 
+    override suspend fun update(entry: DiaryEntry) {
+        val ix = entries.indexOfFirst { it.id == entry.id }
+        entries[ix] = entry
+    }
+
     override suspend fun getAll(): List<DiaryEntry> {
         return entries
     }
 
-    override suspend fun remove(entry: DiaryEntry) {
-        entries.remove(entry)
+    override suspend fun remove(id: Long) {
+        entries.removeIf { it.id == id }
     }
 }
 

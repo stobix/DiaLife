@@ -12,7 +12,7 @@ import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
 import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
 
-class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases,
+class DiaryEntriesViewModel(private val useCases: MainActivity.MainUseCases,
                             private val entryMapper: DisplayDiaryEntryMapper,
                             private val openEntryMapper: DisplayOpenDiaryEntryMapper,
 ) : ViewModel() {
@@ -34,15 +34,6 @@ class DiaryEntriesViewModel(private val useCases: MainActivity.UseCases,
             _entries.postValue(mapped)
             if(mapped.isEmpty())
                 _text.postValue("Go to the Manage tab to add/remove entries.")
-
-//            _text.postValue(
-//                if(fetched.isEmpty())
-//                    "Go to the Manage tab to add/remove entries."
-//                else
-//                    fetched.foldRight("Entries so far:\n") { diaryEntry, acc ->
-//                        "$acc ${diaryEntry.text}\n"
-//                }
-//            )
         }
     }
 

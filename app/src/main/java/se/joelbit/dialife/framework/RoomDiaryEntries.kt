@@ -7,6 +7,7 @@ import se.joelbit.dialife.framework.RoomDbEntryConverter.toDbEntry
 import se.joelbit.dialife.framework.RoomDbEntryConverter.toDomainEntity
 import se.joelbit.dialife.framework.db.DiaryEntriesDao
 import se.joelbit.dialife.framework.db.DiaryEntriesEntity
+import se.joelbit.dialife.framework.db.DiaryEntriesEntityId
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -22,9 +23,12 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
         return dbEntries.map { it.toDomainEntity() }
     }
 
-    override suspend fun remove(entry: DiaryEntry) {
-        val dbEntry = entry.toDbEntry()
-        dao.deleteOne(dbEntry)
+    override suspend fun update(entry: DiaryEntry) {
+        TODO("update")
+    }
+
+    override suspend fun remove(id: Long) {
+        dao.deleteOne(DiaryEntriesEntityId(id))
     }
 }
 

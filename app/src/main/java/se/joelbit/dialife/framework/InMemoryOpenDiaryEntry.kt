@@ -6,11 +6,11 @@ import se.joelbit.dialife.domain.OpenDiaryEntry
 
 class InMemoryOpenDiaryEntry : OpenDiaryEntryDataSource {
     private var state : OpenDiaryEntry = OpenDiaryEntry.None
-    override fun set(entry: DiaryEntry) {
+    override suspend fun set(entry: DiaryEntry) {
         state = OpenDiaryEntry.Entry(entry)
     }
-    override fun get() = state
-    override fun close() {
+    override suspend fun get() = state
+    override suspend fun close() {
         state = OpenDiaryEntry.None
     }
 }

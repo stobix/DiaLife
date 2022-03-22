@@ -16,3 +16,6 @@ data class DiaryEntriesEntity(
     var iconRes: Int ,
 )
 
+data class DiaryEntriesEntityId(
+    var id: Long = 0,
+)

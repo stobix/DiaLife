@@ -25,6 +25,9 @@ interface  DiaryEntriesDao {
     @Delete
     suspend fun deleteOne(entry: DiaryEntriesEntity)
 
+    @Delete(entity = DiaryEntriesEntity::class)
+    suspend fun deleteOne(id: DiaryEntriesEntityId)
+
     @Query("delete from diary_entries")
     suspend fun deleteAll()
 }
