@@ -6,7 +6,6 @@ import org.koin.dsl.module
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.data.DiaryEntryRepository
 import se.joelbit.dialife.data.OpenDiaryEntryDataSource
-import se.joelbit.dialife.data.OpenDiaryEntryRepository
 import se.joelbit.dialife.framework.InMemoryDiaryEntries
 import se.joelbit.dialife.framework.InMemoryOpenDiaryEntry
 import se.joelbit.dialife.framework.InMemoryPredefinedDiaryEntries
@@ -17,8 +16,8 @@ import se.joelbit.dialife.useCases.AddEntry
 import se.joelbit.dialife.useCases.GetEntries
 import se.joelbit.dialife.useCases.RemoveEntry
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapperImpl1
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapperImpl2
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconSmiliesMapper
+import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconHandsMapper
 
 object KoinInjectionDefs {
     val inMemorydataSourcesPreDef = module {
@@ -75,13 +74,13 @@ object KoinInjectionDefs {
 
     val iconResDef1 = module {
         single<DisplayIconMapper> {
-            DisplayIconMapperImpl1()
+            DisplayIconSmiliesMapper()
         }
     }
 
     val iconResDef2 = module {
         single<DisplayIconMapper> {
-            DisplayIconMapperImpl2()
+            DisplayIconHandsMapper()
         }
     }
 

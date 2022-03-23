@@ -1,16 +1,17 @@
 package se.joelbit.dialife.visual.displayEntities.mappers
 
 import androidx.annotation.DrawableRes
+import se.joelbit.dialife.R
 import se.joelbit.dialife.domain.Icon
 import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 
 // We can't inherit from enum directly, and enum can't inherit from stuff, so we must build a bunch of wrappers to make this switchable.
-class DisplayIconMapperImpl2: DisplayIconMapper {
+class DisplayIconHandsMapper: DisplayIconMapper {
     enum class DisplayIconEnum(@DrawableRes val resId: Int) {
-        Checked(android.R.drawable.star_on),
-        Star(android.R.drawable.star_big_on),
-        Unchecked(android.R.drawable.star_off),
-        Error(android.R.drawable.ic_dialog_alert),
+        Checked(R.drawable.ic_thumbsup),
+        Star(R.drawable.ic_thumbsneutral),
+        Unchecked(R.drawable.ic_thumbsdown),
+        Error(R.drawable.ic_thumbserror),
         ;
         companion object {
             fun fromIcon(icon: Icon) = values().firstOrNull { it.name == icon.name } ?: Error
