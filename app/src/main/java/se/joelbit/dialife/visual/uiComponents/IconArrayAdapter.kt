@@ -11,8 +11,11 @@ import se.joelbit.dialife.domain.Icon
 import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 
-class IconArrayAdapter(context: Context, val converter: DisplayIconMapper): ArrayAdapter<DisplayIcon>(context, 0, Icon.values().map { converter.fromIcon(it) }) {
-
+class IconArrayAdapter(context: Context, private val converter: DisplayIconMapper)
+: ArrayAdapter<DisplayIcon>(
+    context, 0, Icon.values().filter { it.isOrdinary }.map { converter.fromIcon(it) }
+)
+{
     private infix fun View?.boundFor(parent: ViewGroup) =
         if (this == null)
             SpinnerItemBinding.inflate(LayoutInflater.from(context), parent, false)

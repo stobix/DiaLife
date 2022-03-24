@@ -33,4 +33,10 @@
         android:name="se.joelbit.dialife.visual.ui.entryManagement.EntryManagementFragment"
         android:label="@string/title_manage_entries"
         tools:layout="@layout/fragment_management" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="se.joelbit.dialife.visual.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/settings_fragment" />
 </navigation>

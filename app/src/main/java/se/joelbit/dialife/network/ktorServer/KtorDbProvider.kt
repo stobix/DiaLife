@@ -29,6 +29,7 @@ import java.time.ZoneOffset
 
 data class KtorUseCases (
     val addEntry: AddEntry,
+    val updateEntry: UpdateEntry,
     val removeEntry: RemoveEntry,
     val getEntries: GetEntries,
 )
@@ -131,6 +132,9 @@ interface KtorApi {
     @POST("/create")
     suspend fun create(@Body entry: NetworkDiaryEntry)
 
+    @PUT("/update")
+    suspend fun update(@Body entry: NetworkDiaryEntry)
+
     @DELETE("/delete/{id}")
     suspend fun delete(@Path("id") id: Long) : ResponseBody
 }
@@ -184,6 +188,17 @@ class KtorDbProvider(dbUseCases: KtorUseCases, mapper: NetworkDiaryEntryMapper) 
                 }
                 val converted = mapper(thing)
                 dbUseCases.addEntry(converted)
+                call.respondText("Cretaed", status = HttpStatusCode.Created )
+            }
+
+            put("/update") { // thing ->
+                val thing = call.receive<NetworkDiaryEntry>()
+                Log.d("Ktor", "responding to a put call with $thing")
+                call.parameters.forEach { s, list ->
+                    Log.d("Ktor", "$s = $list")
+                }
+                val converted = mapper(thing)
+                dbUseCases.updateEntry(converted)
                 call.respondText("Cretaed", status = HttpStatusCode.Created )
             }
         }

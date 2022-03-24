@@ -16,8 +16,10 @@ import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import se.joelbit.dialife.data.DiaryEntryRepository
 import se.joelbit.dialife.data.OpenDiaryEntryRepository
@@ -30,6 +32,7 @@ import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMa
 import se.joelbit.dialife.visual.displayEntities.mappers.IconDisplayDiaryEntryMapper
 import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
 import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
+import se.joelbit.dialife.visual.ui.settings.SettingsViewModel
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     data class MainUseCases (
         val addEntry: AddEntry,
         val removeEntry: RemoveEntry,
+        val updateEntry: UpdateEntry,
         val getEntries: GetEntries,
 
         val setOpenEntry: SetOpenEntry,
@@ -47,18 +51,19 @@ class MainActivity : AppCompatActivity() {
     )
 
     val useCasesDef = module {
-        single { DiaryEntryRepository(get()) }
-        single { OpenDiaryEntryRepository(get()) }
+        singleOf ( ::DiaryEntryRepository )
+        singleOf ( ::OpenDiaryEntryRepository )
 
-        single { AddEntry(get()) }
-        single { RemoveEntry(get()) }
-        single { GetEntries(get()) }
+        singleOf ( ::AddEntry )
+        singleOf ( ::RemoveEntry )
+        singleOf ( ::UpdateEntry )
+        singleOf ( ::GetEntries )
 
-        single { SetOpenEntry(get()) }
-        single { GetOpenEntry(get()) }
-        single { ClearOpenEntry(get()) }
+        singleOf ( ::SetOpenEntry )
+        singleOf ( ::GetOpenEntry )
+        singleOf ( ::ClearOpenEntry )
 
-        single { MainUseCases(get(), get(), get(), get(), get(), get()) }
+        singleOf ( ::MainUseCases )
     }
 
 
@@ -71,15 +76,10 @@ class MainActivity : AppCompatActivity() {
             DisplayOpenDiaryEntryMapperImpl(get())
         }
 
-        viewModel {
-            DiaryEntriesViewModel(get(), get(), get())
-        }
-        viewModel {
-            EntryManagementViewModel(get(),get())
-        }
-        viewModel {
-            MainViewModel(get())
-        }
+        viewModelOf ( ::DiaryEntriesViewModel )
+        viewModelOf ( ::EntryManagementViewModel )
+        viewModelOf ( ::MainViewModel )
+        viewModelOf ( ::SettingsViewModel )
     }
 
 
@@ -91,14 +91,14 @@ class MainActivity : AppCompatActivity() {
             androidContext(this@MainActivity)
 
             // Change to one of these to change the data source.
-            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
+//            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
 //            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesDef
 //            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
-//            val datasourceDef= KoinInjectionDefs.ktorDataSourceDef
+            val datasourceDef= KoinInjectionDefs.ktorDataSourceDef
 
             // Change to one of these to change the icon resource definitions.
-//            val iconResDef = KoinInjectionDefs.iconResDef1
-            val iconResDef = KoinInjectionDefs.iconResDef2
+            val iconResDef = KoinInjectionDefs.iconResDef1
+//            val iconResDef = KoinInjectionDefs.iconResDef2
 
             modules(
                 viewModelsDef,
@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 KoinInjectionDefs.ktorServerDef
             )
         }
+
 
         val viewModel  by viewModel<MainViewModel>()
 

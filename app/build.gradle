@@ -31,16 +31,22 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
 
     kotlinOptions {
-        jvmTarget = '1.8'
+//        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+
+    composeOptions{
+        kotlinCompilerExtensionVersion = "1.1.1"
     }
 
     packagingOptions {
@@ -73,6 +79,7 @@ dependencies {
 
     implementation 'io.insert-koin:koin-core:3.2.0-beta-1'
     implementation 'io.insert-koin:koin-androidx-compose:3.2.0-beta-1'
+
     implementation 'io.insert-koin:koin-gradle-plugin:3.2.0-beta-1'
     testImplementation 'io.insert-koin:koin-test:3.2.0-beta-1'
     androidTestImplementation 'io.insert-koin:koin-test:3.2.0-beta-1'
@@ -98,4 +105,20 @@ dependencies {
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
+
+
+    // When using a AppCompat theme
+    implementation "com.google.accompanist:accompanist-appcompat-theme:0.16.0"
+
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Compose Material Design
+    implementation 'androidx.compose.material:material:1.1.1'
+    // Animations
+    implementation 'androidx.compose.animation:animation:1.1.1'
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling:1.1.1'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
+
 }

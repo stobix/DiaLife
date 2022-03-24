@@ -15,6 +15,7 @@ import se.joelbit.dialife.network.ktorServer.*
 import se.joelbit.dialife.useCases.AddEntry
 import se.joelbit.dialife.useCases.GetEntries
 import se.joelbit.dialife.useCases.RemoveEntry
+import se.joelbit.dialife.useCases.UpdateEntry
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconSmiliesMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconHandsMapper
@@ -53,13 +54,14 @@ object KoinInjectionDefs {
 
         single(named("ktorUseCase")) { AddEntry(get(named("ktorUseCase"))) }
         single(named("ktorUseCase")) { RemoveEntry(get(named("ktorUseCase"))) }
+        single(named("ktorUseCase")) { UpdateEntry(get(named("ktorUseCase"))) }
         single(named("ktorUseCase")) { GetEntries(get(named("ktorUseCase"))) }
 
         // Mapper for the network data
         single { NetworkDiaryEntryMapper() }
 
         // embedded KTor server that has UseCases communicating with the db
-        single { KtorUseCases(get(named("ktorUseCase")), get(named("ktorUseCase")), get(named("ktorUseCase"))) }
+        single { KtorUseCases(get(named("ktorUseCase")), get(named("ktorUseCase")), get(named("ktorUseCase")), get(named("ktorUseCase"))) }
         single { KtorDbProvider(get(), get()) }
     }
 

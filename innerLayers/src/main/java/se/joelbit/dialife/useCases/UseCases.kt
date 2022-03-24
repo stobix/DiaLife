@@ -26,6 +26,9 @@ class GetEntries(repository: DiaryEntryRepository) :
 class AddEntry(repository: DiaryEntryRepository) :
     OneArgUseCase<DiaryEntryRepository,DiaryEntry,Unit>(repository, { add(it) })
 
+class UpdateEntry(repository: DiaryEntryRepository) :
+    OneArgUseCase<DiaryEntryRepository,DiaryEntry,Unit>(repository, { update(it) })
+
 class RemoveEntry(repository: DiaryEntryRepository) :
     OneArgUseCase<DiaryEntryRepository,Long,Unit>(repository, { remove(it) })
 

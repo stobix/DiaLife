@@ -5,4 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_diary_entries">Diary entries</string>
     <string name="title_manage_entries">Manage</string>
+    <string name="title_settings">Settings</string>
 </resources>
