@@ -15,14 +15,17 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
-import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.http.*
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
-import se.joelbit.dialife.useCases.*
+import se.joelbit.dialife.structure.InvokeMapper
+import se.joelbit.dialife.useCases.AddEntry
+import se.joelbit.dialife.useCases.GetEntries
+import se.joelbit.dialife.useCases.RemoveEntry
+import se.joelbit.dialife.useCases.UpdateEntry
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -44,15 +47,6 @@ data class NetworkDiaryEntry(
     val datetimeNS: Int,
     val icon: Int,
 )
-
-// https://youtrack.jetbrains.com/issue/KT-31420
-@Suppress("INAPPLICABLE_JVM_NAME")
-interface InvokeMapper<From,To> {
-    @JvmName("invokeFromTo")
-    operator fun invoke(entry: From): To
-    @JvmName("invokeToFrom")
-    operator fun invoke(entry: To): From
-}
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class NetworkDiaryEntryMapper: InvokeMapper<DiaryEntry, NetworkDiaryEntry> {

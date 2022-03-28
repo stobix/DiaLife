@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -110,9 +111,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val viewModel  by viewModel<MainViewModel>()
-
-        val engine = viewModel.dataServer.engine
+        val engine = get<KtorDbProvider>().engine
 
         thread(start=true, isDaemon = true){
             Log.d("Ktor","Initiating server")
@@ -132,6 +131,4 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
-
 }
-

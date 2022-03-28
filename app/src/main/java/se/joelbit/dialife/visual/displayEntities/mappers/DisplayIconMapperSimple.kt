@@ -7,6 +7,6 @@ open class DisplayIconMapperSimple(
     val fromIconMapper:(Icon) -> DisplayIcon,
     val toIconMapper: (DisplayIcon) -> Icon = { Icon.fromOrdinal(it.ordinal) }
 ) : DisplayIconMapper {
-    override fun fromIcon(icon: Icon) = fromIconMapper(icon)
-    override fun toIcon(icon: DisplayIcon) = toIconMapper(icon)
+    override fun invoke(icon: Icon) = fromIconMapper(icon)
+    override fun invoke(icon: DisplayIcon) = toIconMapper(icon)
 }

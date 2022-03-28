@@ -5,20 +5,16 @@ import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
 
 class DisplayOpenDiaryEntryMapperImpl(private val entryMapper: DisplayDiaryEntryMapper) :
     DisplayOpenDiaryEntryMapper {
-    override fun toDisplay(entry: OpenDiaryEntry) =
+    override operator fun invoke(entry: OpenDiaryEntry) =
         when(entry) {
-            is OpenDiaryEntry.Entry -> DisplayOpenDiaryEntry.Entry(entryMapper.toDisplayEntry(entry.entry))
+            is OpenDiaryEntry.Entry -> DisplayOpenDiaryEntry.Entry(entryMapper(entry.entry))
             OpenDiaryEntry.None -> DisplayOpenDiaryEntry.None
         }
 
-    override fun fromDisplay(entry: DisplayOpenDiaryEntry) =
+    override operator fun invoke(entry: DisplayOpenDiaryEntry) =
         when(entry) {
-            is DisplayOpenDiaryEntry.Entry -> OpenDiaryEntry.Entry(
-                entryMapper.fromDisplayEntry(
-                    entry.entry
-                )
+            is DisplayOpenDiaryEntry.Entry -> OpenDiaryEntry.Entry(entryMapper(entry.entry)
             )
             DisplayOpenDiaryEntry.None -> OpenDiaryEntry.None
         }
-
 }

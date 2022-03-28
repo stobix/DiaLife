@@ -113,7 +113,7 @@ class SettingsFragment : Fragment() {
                 items(icons.size) { ix ->
                     val icon = icons[ix]
                     Image(
-                        painter = painterResource( id = mapper.fromIcon(icon).resId),
+                        painter = painterResource( id = mapper(icon).resId),
                         icon.name,
                         colorFilter =
                             if(!icon.isOrdinary)

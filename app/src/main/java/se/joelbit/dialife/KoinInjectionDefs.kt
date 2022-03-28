@@ -62,7 +62,7 @@ object KoinInjectionDefs {
 
         // embedded KTor server that has UseCases communicating with the db
         single { KtorUseCases(get(named("ktorUseCase")), get(named("ktorUseCase")), get(named("ktorUseCase")), get(named("ktorUseCase"))) }
-        single { KtorDbProvider(get(), get()) }
+        single(createdAtStart = true) { KtorDbProvider(get(), get()) }
     }
 
     val ktorDataSourceDef = module {

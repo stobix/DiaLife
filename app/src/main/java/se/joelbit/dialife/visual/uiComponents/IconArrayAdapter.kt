@@ -11,9 +11,9 @@ import se.joelbit.dialife.domain.Icon
 import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 
-class IconArrayAdapter(context: Context, private val converter: DisplayIconMapper)
+class IconArrayAdapter(context: Context, private val mapper: DisplayIconMapper)
 : ArrayAdapter<DisplayIcon>(
-    context, 0, Icon.values().filter { it.isOrdinary }.map { converter.fromIcon(it) }
+    context, 0, Icon.values().filter { it.isOrdinary }.map { mapper(it) }
 )
 {
     private infix fun View?.boundFor(parent: ViewGroup) =
@@ -24,7 +24,7 @@ class IconArrayAdapter(context: Context, private val converter: DisplayIconMappe
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup) =
         with(convertView boundFor parent) {
-            val resId = getItem(position)?.resId ?: converter.fromIcon(Icon.Error).resId
+            val resId = getItem(position)?.resId ?: mapper(Icon.Error).resId
             Log.d("resId", "$resId")
             iconImage.setImageResource(resId)
             root

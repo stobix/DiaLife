@@ -6,12 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import se.joelbit.dialife.MainViewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
+import se.joelbit.dialife.structure.DataPackage
 import se.joelbit.dialife.visual.displayEntities.DisplayDiaryEntry
 import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
+import se.joelbit.dialife.visual.uiComponents.GeneralSimpleListAdapter
 import se.joelbit.dialife.visual.uiComponents.ListAdapterFactory
 
 class DiaryEntriesFragment : Fragment() {
@@ -23,7 +32,8 @@ class DiaryEntriesFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    val viewModel  by viewModel<DiaryEntriesViewModel>()
+//    val viewModel  by viewModel<DiaryEntriesViewModel>()
+    val viewModel  by sharedViewModel<MainViewModel>()
 
 
     override fun onCreateView(
@@ -73,8 +83,7 @@ class DiaryEntriesFragment : Fragment() {
                     binding.title.text = entry.title
                     binding.text.text = entry.text
                     binding.date.text =
-                        entry.datetime.toLocalDate().toString()+" "+
-                                entry.datetime.toLocalTime().toString()
+                        "${entry.datetime.toLocalDate()} ${entry.datetime.toLocalTime()}"
 
                 }
                 DisplayOpenDiaryEntry.None -> {
@@ -88,10 +97,30 @@ class DiaryEntriesFragment : Fragment() {
 
         }
 
-        viewModel.entries.observe(viewLifecycleOwner) { fetchedEntries ->
-            adapter.submitList(fetchedEntries)
-        }
+//        viewModel.entries.observe(viewLifecycleOwner) { fetchedEntries ->
+//            adapter.submitList(fetchedEntries)
+//        }
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.entryFlow.collect { entries ->
+                    when(entries) {
+                        is DataPackage.Data -> {
+                            val adapter =binding.entries.adapter as GeneralSimpleListAdapter<DisplayDiaryEntry,ViewholderEntriesBinding>?
+                            adapter?.submitList(entries.data)
+                        }
+                        is DataPackage.Error ->
+                            null // TODO add some error message
+                        DataPackage.Loading ->
+                            null // TODO add some spinner
+                    }
+                }
+            }
+        }
     }
 
     fun EditText.setText(s: String?) = text.apply {
