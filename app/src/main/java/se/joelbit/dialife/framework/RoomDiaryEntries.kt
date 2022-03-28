@@ -10,8 +10,9 @@ import se.joelbit.dialife.framework.db.DiaryEntriesEntity
 import se.joelbit.dialife.framework.db.DiaryEntriesEntityId
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import javax.inject.Inject
 
-class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
+class RoomDiaryEntries @Inject constructor(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
     override suspend fun add(entry: DiaryEntry) {
         val nextId = dao.getNextId()
         val dbEntry = entry.toDbEntry(nextId)

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import se.joelbit.dialife.domain.DiaryEntry
@@ -14,12 +15,15 @@ import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-class MainViewModel(
- private val useCases: MainActivity.MainUseCases,
- val iconMapper: DisplayIconMapper,
- private val entryMapper: DisplayDiaryEntryMapper,
- private val openEntryMapper: DisplayOpenDiaryEntryMapper,
+@HiltViewModel
+class MainViewModel
+ @Inject constructor(
+  private val useCases: MainUseCases,
+  val iconMapper: DisplayIconMapper,
+  private val entryMapper: DisplayDiaryEntryMapper,
+  private val openEntryMapper: DisplayOpenDiaryEntryMapper,
 ) : ViewModel() {
 
  fun addEntry(entry: DiaryEntry) = modifyEntries {

@@ -8,49 +8,19 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.invoke
-import kotlinx.coroutines.runBlocking
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-import se.joelbit.dialife.data.DiaryEntryRepository
-import se.joelbit.dialife.data.OpenDiaryEntryRepository
+import dagger.hilt.android.AndroidEntryPoint
 import se.joelbit.dialife.databinding.ActivityMainBinding
 import se.joelbit.dialife.network.ktorServer.KtorDbProvider
 import se.joelbit.dialife.useCases.*
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapperImpl
-import se.joelbit.dialife.visual.displayEntities.mappers.IconDisplayDiaryEntryMapper
-import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
-import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
-import se.joelbit.dialife.visual.ui.settings.SettingsViewModel
+import javax.inject.Inject
 import kotlin.concurrent.thread
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    data class MainUseCases (
-        val addEntry: AddEntry,
-        val removeEntry: RemoveEntry,
-        val updateEntry: UpdateEntry,
-        val getEntries: GetEntries,
-
-        val setOpenEntry: SetOpenEntry,
-        val getOpenEntry: GetOpenEntry,
-        val clearOpenEntry: ClearOpenEntry
-    )
-
+    /*
     val useCasesDef = module {
         singleOf ( ::DiaryEntryRepository )
         singleOf ( ::OpenDiaryEntryRepository )
@@ -83,10 +53,13 @@ class MainActivity : AppCompatActivity() {
         viewModelOf ( ::SettingsViewModel )
     }
 
+     */
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
         startKoin {
             androidLogger()
             androidContext(this@MainActivity)
@@ -109,8 +82,10 @@ class MainActivity : AppCompatActivity() {
                 KoinInjectionDefs.ktorServerDef
             )
         }
+         */
 
 
+        /*
         val engine = get<KtorDbProvider>().engine
 
         thread(start=true, isDaemon = true){
@@ -118,8 +93,15 @@ class MainActivity : AppCompatActivity() {
             engine.start()
         }
 
+         */
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        thread(start=true, isDaemon = true){
+            Log.d("Ktor","Initiating server")
+            ktServer.engine.start()
+        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -131,4 +113,18 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
+
+    @Inject lateinit var ktServer: KtorDbProvider
+
 }
+
+data class MainUseCases @Inject constructor(
+    val addEntry: AddEntry,
+    val removeEntry: RemoveEntry,
+    val updateEntry: UpdateEntry,
+    val getEntries: GetEntries,
+
+    val setOpenEntry: SetOpenEntry,
+    val getOpenEntry: GetOpenEntry,
+    val clearOpenEntry: ClearOpenEntry,
+)

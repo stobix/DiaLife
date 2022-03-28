@@ -28,13 +28,20 @@ import se.joelbit.dialife.useCases.RemoveEntry
 import se.joelbit.dialife.useCases.UpdateEntry
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import javax.inject.Inject
+import javax.inject.Named
 
 
-data class KtorUseCases (
-    val addEntry: AddEntry,
-    val updateEntry: UpdateEntry,
-    val removeEntry: RemoveEntry,
-    val getEntries: GetEntries,
+data class KtorUseCases
+    @Inject constructor(
+        @Named("ktorUseCases")
+        val addEntry: AddEntry,
+        @Named("ktorUseCases")
+        val updateEntry: UpdateEntry,
+        @Named("ktorUseCases")
+        val removeEntry: RemoveEntry,
+        @Named("ktorUseCases")
+        val getEntries: GetEntries,
 )
 
 
@@ -136,7 +143,8 @@ interface KtorApi {
 const val ktorHost = "localhost"
 const val ktorPort = 8000
 
-class KtorDbProvider(dbUseCases: KtorUseCases, mapper: NetworkDiaryEntryMapper)  {
+class KtorDbProvider
+    @Inject constructor(dbUseCases: KtorUseCases, mapper: NetworkDiaryEntryMapper)  {
     val engine =embeddedServer(
         Netty,
         host = ktorHost,

@@ -32,7 +32,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.viewModels
 import com.google.accompanist.appcompattheme.AppCompatTheme
+import dagger.hilt.android.AndroidEntryPoint
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.inject
 import se.joelbit.dialife.databinding.SettingsFragmentBinding
@@ -42,6 +44,7 @@ import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconSmiliesMapper
 import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
     private var _binding: SettingsFragmentBinding? = null
@@ -50,7 +53,7 @@ class SettingsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    val viewModel  by viewModel<SettingsViewModel>()
+    val viewModel  by viewModels<SettingsViewModel>()
 
 
     override fun onCreateView(

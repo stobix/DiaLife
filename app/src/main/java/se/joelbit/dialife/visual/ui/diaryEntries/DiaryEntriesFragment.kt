@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.MainViewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
@@ -23,6 +23,7 @@ import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
 import se.joelbit.dialife.visual.uiComponents.GeneralSimpleListAdapter
 import se.joelbit.dialife.visual.uiComponents.ListAdapterFactory
 
+@AndroidEntryPoint
 class DiaryEntriesFragment : Fragment() {
 
 
@@ -33,7 +34,8 @@ class DiaryEntriesFragment : Fragment() {
     private val binding get() = _binding!!
 
 //    val viewModel  by viewModel<DiaryEntriesViewModel>()
-    val viewModel  by sharedViewModel<MainViewModel>()
+//    val viewModel  by sharedViewModel<MainViewModel>()
+    val viewModel  by viewModels<MainViewModel>()
 
 
     override fun onCreateView(
@@ -110,6 +112,7 @@ class DiaryEntriesFragment : Fragment() {
                 viewModel.entryFlow.collect { entries ->
                     when(entries) {
                         is DataPackage.Data -> {
+                            @Suppress("UNCHECKED_CAST")
                             val adapter =binding.entries.adapter as GeneralSimpleListAdapter<DisplayDiaryEntry,ViewholderEntriesBinding>?
                             adapter?.submitList(entries.data)
                         }
