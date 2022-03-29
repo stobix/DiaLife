@@ -3,10 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.14" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1275" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_dashboard.xml" value="0.25" />
-        <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_entries.xml" value="0.22" />
+        <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_entries.xml" value="0.1" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_management.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelm/AndroidStudioProjects/DiaLife/app/src/main/res/layout/fragment_notifications.xml" value="0.36666666666666664" />
@@ -17,7 +18,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

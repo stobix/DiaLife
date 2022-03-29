@@ -1,5 +1,6 @@
 package se.joelbit.dialife.framework
 
+import kotlinx.coroutines.flow.flowOf
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.domain.DiaryEntry
 
@@ -14,9 +15,7 @@ class InMemoryDiaryEntries : DiaryEntryDataSource {
         entries[ix] = entry
     }
 
-    override suspend fun getAll(): List<DiaryEntry> {
-        return entries
-    }
+    override fun getAll() = flowOf(entries)
 
     override suspend fun remove(id: Long) {
         entries.removeIf { it.id == id }

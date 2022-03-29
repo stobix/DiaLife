@@ -52,9 +52,10 @@ class EntryManagementFragment : Fragment() {
             )
         }
 
-        binding.removeLastEntry.setOnClickListener {
-            viewModel.removeLastEntry()
-        }
+//        binding.removeLastEntry.setOnClickListener {
+//            viewModel.removeLastEntry()
+//        }
+
         with (binding.iconSpinner) {
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {

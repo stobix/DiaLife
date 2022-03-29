@@ -1,11 +1,12 @@
 package se.joelbit.dialife.framework.db
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface  DiaryEntriesDao {
     @Query("select * from diary_entries")
-    suspend fun getAll(): List<DiaryEntriesEntity>
+    fun getAll(): Flow<List<DiaryEntriesEntity>>
 
     @Query("select case when max(id) is null then 1 else max(id)+1 end from diary_entries")
     suspend fun getNextId(): Long

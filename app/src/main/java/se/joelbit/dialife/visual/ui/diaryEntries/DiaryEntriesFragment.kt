@@ -1,26 +1,31 @@
 package se.joelbit.dialife.visual.ui.diaryEntries
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import se.joelbit.dialife.MainViewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
 import se.joelbit.dialife.structure.DataPackage
 import se.joelbit.dialife.visual.displayEntities.DisplayDiaryEntry
+import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
+import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry.*
 import se.joelbit.dialife.visual.uiComponents.GeneralSimpleListAdapter
+import se.joelbit.dialife.visual.uiComponents.IconArrayAdapter
 import se.joelbit.dialife.visual.uiComponents.ListAdapterFactory
 
 class DiaryEntriesFragment : Fragment() {
@@ -32,7 +37,6 @@ class DiaryEntriesFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-//    val viewModel  by viewModel<DiaryEntriesViewModel>()
     val viewModel  by sharedViewModel<MainViewModel>()
 
 
@@ -44,8 +48,6 @@ class DiaryEntriesFragment : Fragment() {
         _binding = FragmentEntriesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        viewModel.getActiveEntry()
-
         binding.entries.layoutManager = GridLayoutManager(context, 2)
 
         val adapter =
@@ -56,52 +58,60 @@ class DiaryEntriesFragment : Fragment() {
                     binding.imageView.setImageResource(item.icon.resId)
                     binding.text.setOnClickListener {
                         viewModel.setActiveEntry(item)
-                        viewModel.getActiveEntry()
                     }
                     binding.imageView.setOnClickListener{
                         viewModel.setActiveEntry(item)
-                        viewModel.getActiveEntry()
                     }
                 }
             )
 
         binding.entries.adapter = adapter
 
-//        viewModel.text.observe(viewLifecycleOwner) {
-//            binding.info.text=it
-//        }
 
-        viewModel.activeEntry.observe(viewLifecycleOwner){ activeEntry ->
-            when(activeEntry){
-                is DisplayOpenDiaryEntry.Entry -> {
-
-                    binding.itemDisplay.visibility = View.VISIBLE
-                    binding.info.visibility = View.INVISIBLE
-
-                    val entry = activeEntry.entry
-                    binding.imageView2.setImageResource(entry.icon.resId)
-                    binding.title.text = entry.title
-                    binding.text.text = entry.text
-                    binding.date.text =
-                        "${entry.datetime.toLocalDate()} ${entry.datetime.toLocalTime()}"
-
+        binding.editButton.setOnClickListener {
+            when(val entry =  openEntry.value) {
+                is Entry -> {
+                    val newEntry = entry.entry.copy(
+                        title = binding.title.string,
+                        text = binding.text.string?:"",
+                        icon = binding.iconSpinner.selectedItem as DisplayIcon
+                    )
+                    viewModel.updateEntry(newEntry)
+                    viewModel.setActiveEntry(null)
                 }
-                DisplayOpenDiaryEntry.None -> {
-                    binding.itemDisplay.visibility = View.INVISIBLE
-                    binding.info.visibility = View.VISIBLE
-                    binding.info.text = "Click an entry to see details, or manage entries on the manage tab."
+                None -> {
                 }
             }
-
-
-
+        }
+        binding.deleteButton.setOnClickListener {
+            when(val entry =  openEntry.value) {
+                is Entry -> {
+                    viewModel.removeEntry(entry.entry)
+                    viewModel.setActiveEntry(null)
+                }
+                None -> {
+                }
+            }
+        }
+        binding.cancelButton.setOnClickListener {
+            viewModel.setActiveEntry(null)
         }
 
-//        viewModel.entries.observe(viewLifecycleOwner) { fetchedEntries ->
-//            adapter.submitList(fetchedEntries)
-//        }
+        viewModel.setActiveEntry(null)
+
+        with (binding.iconSpinner) {
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
+            }
+            this.adapter = IconArrayAdapter(context, viewModel.iconMapper)
+        }
         return root
     }
+
+    val openEntry = MutableStateFlow<DisplayOpenDiaryEntry>(None)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,19 +131,52 @@ class DiaryEntriesFragment : Fragment() {
                 }
             }
         }
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.activeEntryFlow.collect{ activeEntry ->
+                    Log.d("Open entry", "$activeEntry")
+                    openEntry.value = activeEntry
+                    when(activeEntry){
+                        is Entry -> {
 
-    fun EditText.setText(s: String?) = text.apply {
-        clear()
-        if (text != null) {
-            append(text)
+                            binding.itemDisplay.visibility = View.VISIBLE
+                            binding.info.visibility = View.GONE
+
+                            val entry = activeEntry.entry
+                            binding.iconSpinner.setSelection(entry.icon.ordinal)
+//                            binding.imageView2.setImageResource(entry.icon.resId)
+                            binding.title.string = entry.title
+                            binding.text.string = entry.text
+                            binding.date.string =
+                                "${entry.datetime.toLocalDate()} ${entry.datetime.toLocalTime()}"
+
+                        }
+                        None -> {
+                            binding.itemDisplay.visibility = View.GONE
+                            binding.info.visibility = View.VISIBLE
+                            binding.info.string = "Click an entry to see details, or manage entries on the manage tab."
+                        }
+                    }
+
+                }
+            }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadEntries()
-    }
+var TextView.string:String?
+        get() = text.toString()
+        set(value) { text = value}
+
+    var EditText.string:String?
+        get() = text.toString()
+        set(s) {
+            text.apply {
+                clear()
+                if (s != null) {
+                    append(s)
+                }
+            }
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()

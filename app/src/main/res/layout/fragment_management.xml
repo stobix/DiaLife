@@ -28,6 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<!--
     <ImageButton
         android:id="@+id/removeLastEntry"
         android:layout_width="wrap_content"
@@ -37,15 +38,7 @@
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintBottom_toBottomOf="@+id/addEntry"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="Remove last entry"
-        app:layout_constraintBottom_toTopOf="@+id/removeLastEntry"
-        app:layout_constraintEnd_toEndOf="@+id/removeLastEntry" />
+ -->
 
     <TextView
         android:id="@+id/textView3"

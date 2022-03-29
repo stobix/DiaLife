@@ -11,6 +11,8 @@ import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,7 +30,6 @@ import se.joelbit.dialife.useCases.RemoveEntry
 import se.joelbit.dialife.useCases.UpdateEntry
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-
 
 data class KtorUseCases (
     val addEntry: AddEntry,
@@ -88,8 +89,11 @@ class KtorDiaryEntries(
         retrofitApi.create(mapper(entry))
     }
 
-    override suspend fun getAll() =
-        retrofitApi.getAll().map { mapper(it) }
+    override fun getAll() =
+        flow {
+            val vals = retrofitApi.getAll().map { mapper(it) }
+            emit(vals)
+        }
 
 
     override suspend fun update(entry: DiaryEntry) {
@@ -154,7 +158,8 @@ class KtorDbProvider(dbUseCases: KtorUseCases, mapper: NetworkDiaryEntryMapper) 
                 }
                 call.respondBytes {
                     Log.d("Ktor", "responding to a get call")
-                    val data = dbUseCases.getEntries().map {
+                    val data = dbUseCases.getEntries().flowOn(Dispatchers.Default).last().toList().map {
+                        Log.d("Ktor","Got $it")
                         mapper(it)
                     }
                     val string = Json.encodeToString(data)

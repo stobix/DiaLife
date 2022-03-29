@@ -1,5 +1,7 @@
 package se.joelbit.dialife.framework
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
@@ -18,13 +20,16 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
         dao.insert(dbEntry)
     }
 
-    override suspend fun getAll(): List<DiaryEntry> {
-        val dbEntries = dao.getAll()
-        return dbEntries.map { it.toDomainEntity() }
-    }
+    override fun getAll() =
+        dao.getAll()
+            .map { list ->
+                list.map {
+                    it.toDomainEntity()
+                }
+            }
 
     override suspend fun update(entry: DiaryEntry) {
-        TODO("update")
+        dao.update(entry.toDbEntry())
     }
 
     override suspend fun remove(id: Long) {
@@ -32,7 +37,7 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
     }
 }
 
-// Since this "mapper" is only for the room data source, there is no need to create a general mapper.
+// Since this "mapper" is only for the room internal data source, there is no need to create a general mapper to get injected.
 // Also, there's no good way to abstract the dao at this level, so let's keep the whole Room db structure as one conceptual unit.
 object RoomDbEntryConverter {
     fun DiaryEntriesEntity.toDomainEntity() =

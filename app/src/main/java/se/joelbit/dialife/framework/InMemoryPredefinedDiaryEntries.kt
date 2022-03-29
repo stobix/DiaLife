@@ -1,5 +1,6 @@
 package se.joelbit.dialife.framework
 
+import kotlinx.coroutines.flow.flow
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
@@ -28,8 +29,8 @@ class InMemoryPredefinedDiaryEntries : DiaryEntryDataSource {
         val ix = entries.indexOfFirst { it.id == entry.id }
         entries[ix] = entry
     }
-    override suspend fun getAll(): List<DiaryEntry> {
-        return entries
+    override fun getAll() = flow {
+        emit(entries)
     }
 
     override suspend fun remove(id: Long) {

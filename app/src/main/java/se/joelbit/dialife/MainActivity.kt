@@ -8,17 +8,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.invoke
-import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -94,8 +87,8 @@ class MainActivity : AppCompatActivity() {
             // Change to one of these to change the data source.
 //            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesPreDef
 //            val datasourceDef= KoinInjectionDefs.inMemorydataSourcesDef
-//            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
-            val datasourceDef= KoinInjectionDefs.ktorDataSourceDef
+            val datasourceDef= KoinInjectionDefs.roomDataSourceDef
+//            val datasourceDef= KoinInjectionDefs.ktorDataSourceDef
 
             // Change to one of these to change the icon resource definitions.
             val iconResDef = KoinInjectionDefs.iconResDef1

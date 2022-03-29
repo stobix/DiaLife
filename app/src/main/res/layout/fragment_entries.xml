@@ -10,14 +10,25 @@
         android:id="@+id/itemDisplay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="date,imageView2,title,text"/>
+        app:constraint_referenced_ids="date,iconSpinner,title,text, editButton, deleteButton, cancel_button" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="48dp"
+    <Spinner
+        android:id="@+id/iconSpinner"
+        android:layout_width="110dp"
         android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.812"
+         />
+
+    <ImageButton
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <TextView
         android:id="@+id/date"
@@ -28,10 +39,10 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/iconSpinner"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,29 +51,23 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/iconSpinner"
         app:layout_constraintTop_toBottomOf="@id/date" />
 
-    <TextView
+    <EditText
         android:id="@+id/text"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
-        android:textAlignment="center"
+        android:textAlignment="textStart"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/entries"
+        app:flow_horizontalAlign="start"
+        app:flow_verticalAlign="top"
+        app:layout_constraintBottom_toTopOf="@+id/editButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/entries"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/info"
@@ -75,6 +80,37 @@
         app:layout_constraintEnd_toEndOf="@+id/text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:src="@android:drawable/ic_menu_edit"
+        android:text="Button"
+        app:layout_constraintBottom_toTopOf="@+id/entries"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/entries"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editButton"
+        android:layout_marginBottom="52dp"
+        />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:src="@android:drawable/ic_menu_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
