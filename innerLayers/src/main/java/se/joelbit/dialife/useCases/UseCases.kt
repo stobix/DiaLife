@@ -36,6 +36,7 @@ open class OneArgUseCase<Repo, Arg, T>(private val r: Repo, private val f:suspen
     suspend operator fun invoke(arg: Arg) = f(r, arg)
 }
 
+
 class GetEntries(repository: DiaryEntryRepository) :
     NoArgsFlowUseCase<DiaryEntryRepository,List<DiaryEntry>>(repository, { getAll() })
 

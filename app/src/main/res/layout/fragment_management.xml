@@ -4,17 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".visual.ui.entryManagement.EntryManagementFragment">
+    tools:context=".visual.ui.entryManagement.EntryCreationFragment">
 
-    <ImageButton
-        android:id="@+id/addEntry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="80dp"
-        android:contentDescription="add a new entry with the displayed text"
-        android:src="@android:drawable/ic_menu_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:constraint_referenced_ids="addEntry,entryTitle,entryText,textView3, iconSpinner"
+        android:visibility="gone"
+        >
+
+    </androidx.constraintlayout.widget.Group>
 
     <EditText
         android:id="@+id/entryTitle"
@@ -48,6 +47,26 @@
         app:layout_constraintEnd_toEndOf="@+id/addEntry"
         app:layout_constraintTop_toBottomOf="@+id/entryText" />
 
+    <Spinner
+        android:id="@+id/iconSpinner"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/entryTitle"
+        app:layout_constraintEnd_toStartOf="@+id/entryTitle"
+        app:layout_constraintHorizontal_bias="0.812"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/entryTitle" />
+
+    <ImageButton
+        android:id="@+id/addEntry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="80dp"
+        android:contentDescription="add a new entry with the displayed text"
+        android:src="@android:drawable/ic_menu_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
     <EditText
         android:id="@+id/entryText"
         android:layout_width="334dp"
@@ -61,13 +80,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/entryTitle" />
 
-    <Spinner
-        android:id="@+id/iconSpinner"
-        android:layout_width="110dp"
-        android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/entryTitle"
-        app:layout_constraintEnd_toStartOf="@+id/entryTitle"
-        app:layout_constraintHorizontal_bias="0.812"
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/entryTitle" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

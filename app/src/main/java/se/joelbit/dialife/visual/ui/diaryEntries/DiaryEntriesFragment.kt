@@ -19,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import se.joelbit.dialife.MainViewModel
 import se.joelbit.dialife.databinding.FragmentEntriesBinding
 import se.joelbit.dialife.databinding.ViewholderEntriesBinding
-import se.joelbit.dialife.structure.DataPackage
+import se.joelbit.common.DataPackage
 import se.joelbit.dialife.visual.displayEntities.DisplayDiaryEntry
 import se.joelbit.dialife.visual.displayEntities.DisplayIcon
 import se.joelbit.dialife.visual.displayEntities.DisplayOpenDiaryEntry
@@ -69,30 +69,23 @@ class DiaryEntriesFragment : Fragment() {
 
 
         binding.editButton.setOnClickListener {
-            when(val entry =  openEntry.value) {
-                is Entry -> {
-                    val newEntry = entry.entry.copy(
-                        title = binding.title.string,
-                        text = binding.text.string?:"",
-                        icon = binding.iconSpinner.selectedItem as DisplayIcon
-                    )
-                    viewModel.updateEntry(newEntry)
-                    viewModel.setActiveEntry(null)
-                }
-                None -> {
-                }
+            openEntry.value.runEntry {
+                val newEntry = copy(
+                    title = binding.title.string,
+                    text = binding.text.string?:"",
+                    icon = binding.iconSpinner.selectedItem as DisplayIcon
+                )
+                viewModel.updateEntry(newEntry)
+                viewModel.setActiveEntry(null)
             }
         }
         binding.deleteButton.setOnClickListener {
-            when(val entry =  openEntry.value) {
-                is Entry -> {
-                    viewModel.removeEntry(entry.entry)
-                    viewModel.setActiveEntry(null)
-                }
-                None -> {
-                }
+            openEntry.value.runEntry {
+                viewModel.removeEntry(this)
+                viewModel.setActiveEntry(null)
             }
         }
+
         binding.cancelButton.setOnClickListener {
             viewModel.setActiveEntry(null)
         }
@@ -111,7 +104,7 @@ class DiaryEntriesFragment : Fragment() {
         return root
     }
 
-    val openEntry = MutableStateFlow<DisplayOpenDiaryEntry>(None)
+    val openEntry = MutableStateFlow<DisplayOpenDiaryEntry>(DisplayOpenDiaryEntry())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,13 +112,13 @@ class DiaryEntriesFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.entryFlow.collect { entries ->
                     when(entries) {
-                        is DataPackage.Data -> {
+                        is se.joelbit.common.DataPackage.Data -> {
                             val adapter =binding.entries.adapter as GeneralSimpleListAdapter<DisplayDiaryEntry,ViewholderEntriesBinding>?
                             adapter?.submitList(entries.data)
                         }
-                        is DataPackage.Error ->
+                        is se.joelbit.common.DataPackage.Error ->
                             null // TODO add some error message
-                        DataPackage.Loading ->
+                        se.joelbit.common.DataPackage.Loading ->
                             null // TODO add some spinner
                     }
                 }
@@ -136,28 +129,23 @@ class DiaryEntriesFragment : Fragment() {
                 viewModel.activeEntryFlow.collect{ activeEntry ->
                     Log.d("Open entry", "$activeEntry")
                     openEntry.value = activeEntry
-                    when(activeEntry){
-                        is Entry -> {
 
-                            binding.itemDisplay.visibility = View.VISIBLE
-                            binding.info.visibility = View.GONE
+                    activeEntry.whenEntry { entry ->
+                        binding.itemDisplay.visibility = View.VISIBLE
+                        binding.info.visibility = View.GONE
 
-                            val entry = activeEntry.entry
-                            binding.iconSpinner.setSelection(entry.icon.ordinal)
+                        binding.iconSpinner.setSelection(entry.icon.ordinal)
 //                            binding.imageView2.setImageResource(entry.icon.resId)
-                            binding.title.string = entry.title
-                            binding.text.string = entry.text
-                            binding.date.string =
-                                "${entry.datetime.toLocalDate()} ${entry.datetime.toLocalTime()}"
+                        binding.title.string = entry.title
+                        binding.text.string = entry.text
+                        binding.date.string =
+                            "${entry.datetime.toLocalDate()} ${entry.datetime.toLocalTime()}"
 
-                        }
-                        None -> {
-                            binding.itemDisplay.visibility = View.GONE
-                            binding.info.visibility = View.VISIBLE
-                            binding.info.string = "Click an entry to see details, or manage entries on the manage tab."
-                        }
+                    } whenNot {
+                        binding.itemDisplay.visibility = View.GONE
+                        binding.info.visibility = View.VISIBLE
+                        binding.info.string = "Click an entry to see details, or manage entries on the manage tab."
                     }
-
                 }
             }
         }

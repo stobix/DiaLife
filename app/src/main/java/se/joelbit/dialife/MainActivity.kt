@@ -1,8 +1,14 @@
 package se.joelbit.dialife
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -12,6 +18,7 @@ import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -20,18 +27,47 @@ import se.joelbit.dialife.data.OpenDiaryEntryRepository
 import se.joelbit.dialife.databinding.ActivityMainBinding
 import se.joelbit.dialife.network.ktorServer.KtorDbProvider
 import se.joelbit.dialife.useCases.*
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
-import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapperImpl
-import se.joelbit.dialife.visual.displayEntities.mappers.IconDisplayDiaryEntryMapper
+import se.joelbit.dialife.visual.displayEntities.mappers.*
 import se.joelbit.dialife.visual.ui.diaryEntries.DiaryEntriesViewModel
-import se.joelbit.dialife.visual.ui.entryManagement.EntryManagementViewModel
+import se.joelbit.dialife.visual.ui.entryManagement.EntryCreationViewModel
 import se.joelbit.dialife.visual.ui.settings.SettingsViewModel
+import java.io.File
+import java.util.concurrent.ExecutorService
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    val viewModel by viewModel<MainViewModel>()
+
+    val requestCamera =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            when(it) {
+                true -> Log.d("Camera", "YES")
+                false -> Log.d("Camera", "No no...")
+            }
+            viewModel.hasCamPerm.value = it
+        }
+
+    fun getCam() {
+        Manifest.permission.CAMERA.let { perm ->
+            when (ContextCompat.checkSelfPermission(this, perm)){
+                PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("Camera", "Camera prev granted")
+                    viewModel.hasCamPerm.value = true
+                }
+                else -> when {
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, perm) -> {
+                        Log.d("Camera", "Show dialog thing")
+                        requestCamera.launch(perm)
+                    }
+                    else ->
+                        requestCamera.launch(perm)
+                }
+            }
+        }
+    }
 
     data class MainUseCases (
         val addEntry: AddEntry,
@@ -64,14 +100,19 @@ class MainActivity : AppCompatActivity() {
     val viewModelsDef = module {
 
         single<DisplayDiaryEntryMapper> {
-            IconDisplayDiaryEntryMapper(get())
+            IconDisplayDiaryEntryMapper(get(), get())
         }
+
+        single<PictureMapper> {
+            PictureMapperImpl()
+        }
+
         single<DisplayOpenDiaryEntryMapper> {
             DisplayOpenDiaryEntryMapperImpl(get())
         }
 
         viewModelOf ( ::DiaryEntriesViewModel )
-        viewModelOf ( ::EntryManagementViewModel )
+        viewModelOf ( ::EntryCreationViewModel )
         viewModelOf ( ::MainViewModel )
         viewModelOf ( ::SettingsViewModel )
     }
@@ -103,6 +144,9 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        getCam()
+        viewModel.mediaDir.value = getMediaDir()
+
 
         val engine = get<KtorDbProvider>().engine
 
@@ -123,5 +167,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_diary_entries, R.id.navigation_notifications))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    fun getMediaDir(): File {
+        val mediaDir = externalMediaDirs.firstOrNull()?.let {
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
+        return when {
+            mediaDir?.exists() == true -> mediaDir
+            else -> filesDir
+        }
     }
 }

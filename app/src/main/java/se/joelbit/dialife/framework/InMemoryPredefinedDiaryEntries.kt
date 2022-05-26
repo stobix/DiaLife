@@ -11,14 +11,17 @@ class InMemoryPredefinedDiaryEntries : DiaryEntryDataSource {
         DiaryEntry(1, "ett", "en lång text",
             datetime = LocalDateTime.of(1,2,3,4,5,6),
             icon = Icon.Happy,
+            pictures = emptyList()
         ),
         DiaryEntry(2, "tu","två lång text",
             datetime = LocalDateTime.of(1,2,3,4,5,6),
             icon = Icon.Sad,
+            pictures = emptyList()
         ),
         DiaryEntry(3, "tre","tre lång text",
             datetime = LocalDateTime.of(1,2,3,4,5,6),
             icon = Icon.Neutral,
+            pictures = emptyList()
         ),
     )
     override suspend fun add(entry: DiaryEntry) {

@@ -76,7 +76,7 @@ class SettingsFragment : Fragment() {
     }
 
     // Preview eats resources. Only uncomment when previewing.
-//    @Preview
+    @Preview
     @Composable
     fun PreviewView() {
         AppCompatTheme() {

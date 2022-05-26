@@ -1,15 +1,18 @@
 package se.joelbit.dialife
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import se.joelbit.dialife.domain.DiaryEntry
-import se.joelbit.dialife.structure.DataPackage
+import se.joelbit.common.DataPackage
 import se.joelbit.dialife.visual.displayEntities.DisplayDiaryEntry
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayDiaryEntryMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayIconMapper
 import se.joelbit.dialife.visual.displayEntities.mappers.DisplayOpenDiaryEntryMapper
+import java.io.File
 
 class MainViewModel(
  private val useCases: MainActivity.MainUseCases,
@@ -18,7 +21,14 @@ class MainViewModel(
  private val openEntryMapper: DisplayOpenDiaryEntryMapper,
 ) : ViewModel() {
 
+
+ val hasCamPerm = mutableStateOf(false)
+
+ val mediaDir = mutableStateOf<File>(File(""))
+
+
  fun addEntry(entry: DiaryEntry) = modifyEntries {
+  Log.d("Entry", "Saving $entry")
   useCases.addEntry(entry)
  }
 
@@ -52,14 +62,14 @@ class MainViewModel(
 
  val entryFlow =
   useCases.getEntries().transformLatest { entries ->
-   emit(DataPackage.Loading)
+   emit(se.joelbit.common.DataPackage.Loading)
       try {
-       emit(DataPackage.Data(entryMapper(entries)))
+       emit(se.joelbit.common.DataPackage.Data(entryMapper(entries)))
       } catch (error: Throwable) {
-       emit(DataPackage.Error(error))
+       emit(se.joelbit.common.DataPackage.Error(error))
       }
   }.catch { error ->
-   emit(DataPackage.Error(error))
+   emit(se.joelbit.common.DataPackage.Error(error))
   }
 
 

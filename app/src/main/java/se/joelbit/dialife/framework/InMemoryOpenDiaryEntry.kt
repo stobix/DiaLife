@@ -7,14 +7,14 @@ import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.OpenDiaryEntry
 
 class InMemoryOpenDiaryEntry : OpenDiaryEntryDataSource {
-    private var state = MutableStateFlow<OpenDiaryEntry>(OpenDiaryEntry.None)
+    private var state = MutableStateFlow<OpenDiaryEntry>(OpenDiaryEntry())
 
     override suspend fun set(entry: DiaryEntry) {
-        state.value = OpenDiaryEntry.Entry(entry)
+        state.value = OpenDiaryEntry(entry)
     }
     override fun get() = state.asStateFlow()
     override suspend fun close() {
-        state.value = OpenDiaryEntry.None
+        state.value = OpenDiaryEntry()
     }
 }
 

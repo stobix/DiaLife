@@ -7,7 +7,9 @@ data class DiaryEntry (
         val title: String?,
         val text: String,
         val datetime: LocalDateTime,
-        val icon: Icon
-        )
+        val icon: Icon,
+        val pictures: List<Picture>,
+        ) {
+}
 
 

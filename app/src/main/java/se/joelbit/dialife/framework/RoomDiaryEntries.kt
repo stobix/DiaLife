@@ -1,15 +1,19 @@
 package se.joelbit.dialife.framework
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import se.joelbit.dialife.data.DiaryEntryDataSource
 import se.joelbit.dialife.domain.DiaryEntry
 import se.joelbit.dialife.domain.Icon
+import se.joelbit.dialife.domain.Picture
+import se.joelbit.dialife.framework.RoomDbEntryConverter.dbPics
 import se.joelbit.dialife.framework.RoomDbEntryConverter.toDbEntry
 import se.joelbit.dialife.framework.RoomDbEntryConverter.toDomainEntity
+import se.joelbit.dialife.framework.db.Diary2Pictures
 import se.joelbit.dialife.framework.db.DiaryEntriesDao
 import se.joelbit.dialife.framework.db.DiaryEntriesEntity
+import se.joelbit.dialife.framework.db.DiaryEntry as dbEntry
 import se.joelbit.dialife.framework.db.DiaryEntriesEntityId
+import se.joelbit.dialife.framework.db.Picture as dbPic
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -18,6 +22,13 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
         val nextId = dao.getNextId()
         val dbEntry = entry.toDbEntry(nextId)
         dao.insert(dbEntry)
+        entry.dbPics().forEach {
+            val inserted = dao.insert(it)
+            dao.insert(Diary2Pictures(
+                picId = inserted,
+                entryId = nextId,
+            ))
+        }
     }
 
     override fun getAll() =
@@ -40,13 +51,25 @@ class RoomDiaryEntries(val dao: DiaryEntriesDao) : DiaryEntryDataSource {
 // Since this "mapper" is only for the room internal data source, there is no need to create a general mapper to get injected.
 // Also, there's no good way to abstract the dao at this level, so let's keep the whole Room db structure as one conceptual unit.
 object RoomDbEntryConverter {
-    fun DiaryEntriesEntity.toDomainEntity() =
+
+    fun Long.asLocalDateTime() = LocalDateTime.ofEpochSecond(this,0, ZoneOffset.ofHours(0))
+
+    fun dbEntry.toDomainEntity() =
         DiaryEntry(
-            id = id,
-            title = title,
-            text = text,
-            datetime = LocalDateTime.ofEpochSecond(timestamp,0, ZoneOffset.ofHours(0)),
-            icon = Icon.fromOrdinal(iconRes),
+            id = entry.id,
+            title = entry.title,
+            text = entry.text,
+            datetime = entry.timestamp.asLocalDateTime(),
+            icon = Icon.fromOrdinal(entry.iconRes),
+            pictures = pictures.map {
+                it.run {
+                    Picture(
+                        id= id,
+                        uri = uri,
+                        timestamp = timestamp.asLocalDateTime(),
+                    )
+                }
+            }
         )
 
     fun DiaryEntry.toDbEntry() = toDbEntry(id)
@@ -58,4 +81,14 @@ object RoomDbEntryConverter {
             timestamp = datetime.toEpochSecond(ZoneOffset.ofHours(0)),
             iconRes = icon.ordinal,
         )
+
+    fun DiaryEntry.dbPics() =
+        pictures.map {
+            dbPic(
+                id = it.id,
+                uri = it.uri,
+                timestamp = it.timestamp.toEpochSecond(ZoneOffset.UTC)
+            )
+        }
+
 }

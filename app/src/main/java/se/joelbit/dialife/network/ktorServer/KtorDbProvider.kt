@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.http.*
@@ -62,7 +62,9 @@ class NetworkDiaryEntryMapper: InvokeMapper<DiaryEntry, NetworkDiaryEntry> {
                 entry.datetimeNS,
                 ZoneOffset.UTC
             ),
-            icon = Icon.fromOrdinal(entry.icon)
+            icon = Icon.fromOrdinal(entry.icon),
+            // TODO implement this correctly
+            pictures = emptyList()
         )
 
     @JvmName("invokeToFrom")
@@ -91,7 +93,7 @@ class KtorDiaryEntries(
 
     override fun getAll() =
         flow {
-            val vals = retrofitApi.getAll().map { mapper(it) }
+            val vals = mapper(retrofitApi.getAll())
             emit(vals)
         }
 
@@ -113,11 +115,7 @@ object KtorRetrofitReceiver {
                 .Builder()
                 .baseUrl("http://$ktorHost:$ktorPort")
 //                .baseUrl("https://$ktorHost:$ktorPort")
-                .addConverterFactory(
-                    Json.asConverterFactory(
-                        MediaType.get("application/json")
-                    )
-                )
+                .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(api)
         }

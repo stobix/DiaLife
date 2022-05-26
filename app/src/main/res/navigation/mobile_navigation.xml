@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="se.joelbit.dialife.visual.ui.entryManagement.EntryManagementFragment"
+        android:name="se.joelbit.dialife.visual.ui.entryManagement.EntryCreationFragment"
         android:label="@string/title_manage_entries"
         tools:layout="@layout/fragment_management" />
 

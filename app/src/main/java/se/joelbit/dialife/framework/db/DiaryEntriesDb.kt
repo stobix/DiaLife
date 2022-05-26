@@ -3,13 +3,13 @@ package se.joelbit.dialife.framework.db
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
 
 @Database(
-    entities = [(DiaryEntriesEntity::class)],
-    version = 2,
+    entities = [DiaryEntriesEntity::class,Picture::class, Diary2Pictures::class],
+    version = 3,
     autoMigrations = [
-        AutoMigration(from = 1,to = 2)
+        AutoMigration(from = 1,to = 2),
+        AutoMigration(from = 2,to = 3),
     ],
     exportSchema = true,
 )

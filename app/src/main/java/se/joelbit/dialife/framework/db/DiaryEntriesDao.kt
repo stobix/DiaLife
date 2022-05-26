@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface  DiaryEntriesDao {
     @Query("select * from diary_entries")
-    fun getAll(): Flow<List<DiaryEntriesEntity>>
+    fun getAll(): Flow<List<DiaryEntry>>
 
     @Query("select case when max(id) is null then 1 else max(id)+1 end from diary_entries")
     suspend fun getNextId(): Long
@@ -31,4 +31,17 @@ interface  DiaryEntriesDao {
 
     @Query("delete from diary_entries")
     suspend fun deleteAll()
+
+    @Insert
+    suspend fun insert(picture: Picture): Long
+
+    @Insert
+    suspend fun insert(picture: Diary2Pictures)
+
+    @Query("delete from `diary entries <-> pictures` where entryId == :diaryEntryId")
+    suspend fun deleteAllPicturesFor(diaryEntryId: Int)
+
+    @Insert
+    suspend fun update(picture: Picture)
+
 }
